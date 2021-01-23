@@ -182,11 +182,10 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
         if (path.isEmpty())
             return "[ ]";
         // Costruisco la stringa
-        StringBuffer s = new StringBuffer();
-        s.append("[ " + path.get(0).getNode1().toString());
-        for (int i = 0; i < path.size(); i++)
-            s.append(" -- " + path.get(i).getWeight() + " --> "
-                    + path.get(i).getNode2().toString());
+        StringBuilder s = new StringBuilder();
+        s.append("[ ").append(path.get(0).getNode1().toString());
+        for (GraphEdge<L> lGraphEdge : path)
+            s.append(" -- ").append(lGraphEdge.getWeight()).append(" --> ").append(lGraphEdge.getNode2().toString());
         s.append(" ]");
         return s.toString();
     }

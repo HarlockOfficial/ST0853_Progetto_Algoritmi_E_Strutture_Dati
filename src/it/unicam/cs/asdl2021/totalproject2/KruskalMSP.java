@@ -31,7 +31,7 @@ public class KruskalMSP<L> {
      * l'algoritmo di Kruskal su un grafo non orientato e pesato.
      */
     public KruskalMSP() {
-        this.disjointSets = new ArrayList<HashSet<GraphNode<L>>>();
+        this.disjointSets = new ArrayList<>();
         // TODO implementare: completare con eventuali altre inizializzazioni
     }
 
@@ -45,8 +45,8 @@ public class KruskalMSP<L> {
      *              un grafo non orientato, pesato, con pesi non negativi
      * @return l'insieme degli archi del grafo g che costituiscono l'albero di
      *         copertura minimo trovato
-     * @throw NullPointerException se il grafo g è null
-     * @throw IllegalArgumentException se il grafo g è orientato, non pesato o
+     * @throws NullPointerException se il grafo g è null
+     * @throws IllegalArgumentException se il grafo g è orientato, non pesato o
      *        con pesi negativi
      */
     public Set<GraphEdge<L>> computeMSP(Graph<L> g) {

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.unicam.cs.asdl2021.totalproject2;
 
 /**
@@ -235,9 +232,7 @@ public class GraphNode<L> implements PriorityQueueElement {
         if (!(obj instanceof GraphNode))
             return false;
         GraphNode<?> other = (GraphNode<?>) obj;
-        if (this.label.equals(other.label))
-            return true;
-        return false;
+        return this.label.equals(other.label);
     }
 
     @Override

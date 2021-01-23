@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.unicam.cs.asdl2021.totalproject2;
 
 /**
@@ -195,17 +192,13 @@ public class GraphEdge<L> {
         if (directed) {
             if (!node1.equals(other.node1))
                 return false;
-            if (!node2.equals(other.node2))
-                return false;
-            return true;
+            return node2.equals(other.node2);
         } else { // caso speciale per grafi non orientati
             // ci deve essere una uguaglianza diretta o incrociata
             if (node1.equals(other.node1) && node2.equals(other.node2))
                 return true;
-            if (node1.equals(other.node2) && node2.equals(other.node1))
-                return true;
+            return node1.equals(other.node2) && node2.equals(other.node1);
             // Altrimenti non sono uguali
-            return false;
         }
     }
 

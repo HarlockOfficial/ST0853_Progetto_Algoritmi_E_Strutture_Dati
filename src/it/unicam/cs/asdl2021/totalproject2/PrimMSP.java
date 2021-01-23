@@ -47,9 +47,9 @@ public class PrimMSP<L> {
      *              dell'albero di copertura minimo. Tale nodo sarà la radice
      *              dell'albero di copertura trovato
      * 
-     * @throw NullPointerException se il grafo g o il nodo sorgente s sono nulli
-     * @throw IllegalArgumentException se il nodo sorgente s non esiste in g
-     * @throw IllegalArgumentException se il grafo g è orientato, non pesato o
+     * @throws NullPointerException se il grafo g o il nodo sorgente s sono nulli
+     * @throws IllegalArgumentException se il nodo sorgente s non esiste in g
+     * @throws IllegalArgumentException se il grafo g è orientato, non pesato o
      *        con pesi negativi
      */
     public void computeMSP(Graph<L> g, GraphNode<L> s) {

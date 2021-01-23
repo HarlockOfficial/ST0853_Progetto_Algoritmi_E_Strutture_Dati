@@ -41,7 +41,7 @@ public interface SingleSourceShortestPathComputer<L> {
      *                                      grafo contiene cicli di peso
      *                                      negativo.
      */
-    public void computeShortestPathsFrom(GraphNode<L> sourceNode);
+    void computeShortestPathsFrom(GraphNode<L> sourceNode);
 
     /**
      * Determina se è stata invocata almeno una volta la procedura di calcolo
@@ -50,7 +50,7 @@ public interface SingleSourceShortestPathComputer<L> {
      * @return true, se i cammini minimi da un certo nodo sorgente sono stati
      *         calcolati almeno una volta da questo calcolatore
      */
-    public boolean isComputed();
+    boolean isComputed();
 
     /**
      * Restituisce il nodo sorgente specificato nell'ultima chiamata effettuata
@@ -64,14 +64,14 @@ public interface SingleSourceShortestPathComputer<L> {
      *                                   volta il calcolo dei cammini minimi a
      *                                   partire da un nodo sorgente
      */
-    public GraphNode<L> getLastSource();
+    GraphNode<L> getLastSource();
 
     /**
      * Restituisce il grafo su cui opera questo calcolatore.
      * 
      * @return il grafo su cui opera questo calcolatore
      */
-    public Graph<L> getGraph();
+    Graph<L> getGraph();
 
     /**
      * Restituisce una lista di archi dal nodo sorgente dell'ultimo calcolo di
@@ -98,7 +98,7 @@ public interface SingleSourceShortestPathComputer<L> {
      *                                      a partire da un nodo sorgente
      * 
      */
-    public List<GraphEdge<L>> getShortestPathTo(GraphNode<L> targetNode);
+    List<GraphEdge<L>> getShortestPathTo(GraphNode<L> targetNode);
 
     /**
      * Genera una stringa di descrizione di un path riportando i nodi
@@ -111,18 +111,17 @@ public interface SingleSourceShortestPathComputer<L> {
      * @throws NullPointerException
      *                                  se il cammino passato è nullo
      */
-    default public String printPath(List<GraphEdge<L>> path) {
+    default String printPath(List<GraphEdge<L>> path) {
         if (path == null)
             throw new NullPointerException(
                     "Richiesta di stampare un path nullo");
         if (path.isEmpty())
             return "[ ]";
         // Costruisco la stringa
-        StringBuffer s = new StringBuffer();
-        s.append("[ " + path.get(0).getNode1().toString());
-        for (int i = 0; i < path.size(); i++)
-            s.append(" -- " + path.get(i).getWeight() + " --> "
-                    + path.get(i).getNode2().toString());
+        StringBuilder s = new StringBuilder();
+        s.append("[ ").append(path.get(0).getNode1().toString());
+        for (GraphEdge<L> lGraphEdge : path)
+            s.append(" -- ").append(lGraphEdge.getWeight()).append(" --> ").append(lGraphEdge.getNode2().toString());
         s.append(" ]");
         return s.toString();
     }

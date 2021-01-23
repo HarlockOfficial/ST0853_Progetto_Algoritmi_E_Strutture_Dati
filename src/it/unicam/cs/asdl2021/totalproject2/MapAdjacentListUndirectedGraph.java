@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.unicam.cs.asdl2021.totalproject2;
 
 import java.util.Map;
@@ -63,7 +60,7 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
      */
     public MapAdjacentListUndirectedGraph() {
         // Inizializza la mappa con la mappa vuota
-        this.adjacentLists = new HashMap<GraphNode<L>, Set<GraphEdge<L>>>();
+        this.adjacentLists = new HashMap<>();
     }
 
     @Override

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.unicam.cs.asdl2021.totalproject2;
 
 import java.util.ArrayList;
@@ -63,7 +60,7 @@ public class AdjacencyMatrixDirectedGraph<L> extends Graph<L> {
      */
     public AdjacencyMatrixDirectedGraph() {
         this.matrix = new ArrayList<ArrayList<GraphEdge<L>>>();
-        this.nodesIndex = new HashMap<GraphNode<L>, Integer>();
+        this.nodesIndex = new HashMap<>();
     }
 
     @Override
@@ -81,7 +78,7 @@ public class AdjacencyMatrixDirectedGraph<L> extends Graph<L> {
     @Override
     public void clear() {
         this.matrix = new ArrayList<ArrayList<GraphEdge<L>>>();
-        this.nodesIndex = new HashMap<GraphNode<L>, Integer>();
+        this.nodesIndex = new HashMap<>();
     }
 
     @Override
