@@ -1,9 +1,6 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Classe che implementa un grafo orientato tramite matrice di adiacenza. Non
@@ -59,25 +56,31 @@ public class AdjacencyMatrixDirectedGraph<L> extends Graph<L> {
      * Crea un grafo vuoto.
      */
     public AdjacencyMatrixDirectedGraph() {
-        this.matrix = new ArrayList<ArrayList<GraphEdge<L>>>();
+        this.matrix = new ArrayList<>();
         this.nodesIndex = new HashMap<>();
     }
 
     @Override
     public int nodeCount() {
-        // TODO implementare
-        return -1;
+        return nodesIndex.size();
     }
 
     @Override
     public int edgeCount() {
-        // TODO implementare
-        return -1;
+        int count = 0;
+        for(ArrayList<GraphEdge<L>> tmp: matrix){
+            for(GraphEdge<L> elem:tmp){
+                if(elem!=null){
+                    count+=1;
+                }
+            }
+        }
+        return count;
     }
 
     @Override
     public void clear() {
-        this.matrix = new ArrayList<ArrayList<GraphEdge<L>>>();
+        this.matrix = new ArrayList<>();
         this.nodesIndex = new HashMap<>();
     }
 
@@ -89,105 +92,226 @@ public class AdjacencyMatrixDirectedGraph<L> extends Graph<L> {
 
     @Override
     public Set<GraphNode<L>> getNodes() {
-        // TODO implementare
-        return null;
+        return nodesIndex.keySet();
     }
 
     @Override
     public boolean addNode(GraphNode<L> node) {
-        // TODO implementare
-        return false;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(containsNode(node)){
+            return false;
+        }
+        nodesIndex.put(node, nodesIndex.size());
+        ArrayList<GraphEdge<L>> tmp = new ArrayList<>();
+        for(int i =0;i<=matrix.size();++i){
+            tmp.add(null);
+        }
+        matrix.add(tmp);
+        return true;
     }
 
     @Override
     public boolean removeNode(GraphNode<L> node) {
-        throw new UnsupportedOperationException(
-                "Remove di nodi non supportata");
+        throw new UnsupportedOperationException("Remove di nodi non supportata");
     }
 
     @Override
     public boolean containsNode(GraphNode<L> node) {
-        // TODO implementare
-        return false;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        return nodesIndex.containsKey(node);
     }
 
     @Override
     public GraphNode<L> getNodeOf(L label) {
-        // TODO implementare
+        if(label==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        for(GraphNode<L> tmp: nodesIndex.keySet()){
+            if(tmp.getLabel().equals(label)){
+                return tmp;
+            }
+        }
         return null;
     }
 
     @Override
     public int getNodeIndexOf(L label) {
-        // TODO implementare
-        return -1;
+        if(label==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        for(GraphNode<L> tmp: nodesIndex.keySet()){
+            if(tmp.getLabel().equals(label)){
+                return nodesIndex.get(tmp);
+            }
+        }
+        throw new IllegalArgumentException("Argument not present in graph");
     }
 
     @Override
-    public GraphNode<L> getNodeAtIndex(int i) {
-        // TODO implementare
-        return null;
+    public GraphNode<L> getNodeAtIndex(int index) {
+        if(index<0 || index>=nodesIndex.size()){
+            throw new IndexOutOfBoundsException("Cannot obtain value at index "+index+" graph length: "+
+                    nodesIndex.size());
+        }
+        for(GraphNode<L> tmp: nodesIndex.keySet()){
+            if(nodesIndex.get(tmp)==index){
+                return tmp;
+            }
+        }
+        // is impossible
+        throw new UnsupportedOperationException("Impossible exception, value is returned by for");
     }
 
+
+    //TODO check maybe is wrong: matrix.get(nodesIndex.get(node))
     @Override
     public Set<GraphNode<L>> getAdjacentNodesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        HashSet<GraphNode<L>> out = new HashSet<>();
+        for(GraphEdge<L> elem: matrix.get(nodesIndex.get(node))){
+            if(elem!=null){
+                out.add(elem.getNode2());
+            }
+        }
+        return out;
     }
 
+    //TODO check maybe is wrong: matrix.get(nodesIndex.get(node))
     @Override
     public Set<GraphNode<L>> getPredecessorNodesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        HashSet<GraphNode<L>> out = new HashSet<>();
+        for(ArrayList<GraphEdge<L>> arr: matrix){
+            if(arr.get(nodesIndex.get(node))!=null){
+                out.add(arr.get(nodesIndex.get(node)).getNode1());
+            }
+        }
+        return out;
     }
 
     @Override
     public Set<GraphEdge<L>> getEdges() {
-        // TODO implementare
-        return null;
+        HashSet<GraphEdge<L>> out = new HashSet<>();
+        for(ArrayList<GraphEdge<L>> arr: matrix){
+            for(GraphEdge<L> elem: arr){
+                if(elem!=null){
+                    out.add(elem);
+                }
+            }
+        }
+        return out;
     }
 
     @Override
     public boolean addEdge(GraphEdge<L> edge) {
-        // TODO implementare
-        return false;
+        if(edge==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(edge.getNode1()) || !nodesIndex.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        if(edge.isDirected()!=isDirected()){
+            throw new IllegalArgumentException("Passed parameter must be directed or undirected, " +
+                    "just like the graph");
+        }
+        if(matrix.get(nodesIndex.get(edge.getNode1())).get(nodesIndex.get(edge.getNode2()))!=null){
+            return false;
+        }
+        matrix.get(nodesIndex.get(edge.getNode1())).set(nodesIndex.get(edge.getNode2()), edge);
+        return true;
     }
 
     @Override
     public boolean removeEdge(GraphEdge<L> edge) {
-        // TODO implementare
-        return false;
+        if(edge==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(edge.getNode1()) || !nodesIndex.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        if(matrix.get(nodesIndex.get(edge.getNode1())).get(nodesIndex.get(edge.getNode2()))==null){
+            return false;
+        }
+        matrix.get(nodesIndex.get(edge.getNode1())).set(nodesIndex.get(edge.getNode2()), null);
+        return true;
     }
 
     @Override
     public boolean containsEdge(GraphEdge<L> edge) {
-        // TODO implementare
-        return false;
+        if(edge==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(edge.getNode1()) || !nodesIndex.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        return edge.equals(matrix.get(nodesIndex.get(edge.getNode1())).get(nodesIndex.get(edge.getNode2())));
     }
 
     @Override
     public Set<GraphEdge<L>> getEdgesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        HashSet<GraphEdge<L>> out=new HashSet<>();
+        for(GraphEdge<L> elem: matrix.get(nodesIndex.get(node))){
+            if(elem!=null){
+                out.add(elem);
+            }
+        }
+        return out;
     }
 
     @Override
     public Set<GraphEdge<L>> getIngoingEdgesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        HashSet<GraphEdge<L>> out = new HashSet<>();
+        for(ArrayList<GraphEdge<L>> arr: matrix){
+            if(arr.get(nodesIndex.get(node))!=null){
+                out.add(arr.get(nodesIndex.get(node)));
+            }
+        }
+        return out;
     }
 
     @Override
     public GraphEdge<L> getEdge(GraphNode<L> node1, GraphNode<L> node2) {
-        // TODO implementare
-        return null;
+        if(node1==null || node2==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!nodesIndex.containsKey(node1) || !nodesIndex.containsKey(node2)){
+            throw new IllegalArgumentException("Passed parameter must be part of the graph");
+        }
+        return getEdgeAtNodeIndexes(nodesIndex.get(node1), nodesIndex.get(node2));
     }
 
     @Override
     public GraphEdge<L> getEdgeAtNodeIndexes(int i, int j) {
-        // TODO implementare
-        return null;
+        if(i<0 || i>=nodesIndex.size() || j<0 || j>nodesIndex.size()){
+            throw new IndexOutOfBoundsException("Cannot obtain value at index "+i+" or at index "+j+
+                    " graph length: "+nodesIndex.size());
+        }
+        return matrix.get(i).get(j);
     }
-
-    // TODO inserire eventuali metodi privati per fini di implementazione
 }
