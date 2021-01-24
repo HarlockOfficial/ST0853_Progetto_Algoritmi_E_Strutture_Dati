@@ -1,6 +1,5 @@
 **/.classpath
 **/.project
-**/**/DACOMPILARE.txt
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij+all,eclipse,netbeans
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,intellij+all,eclipse,netbeans
 
@@ -195,3 +194,4 @@ nbdist/
 .nb-gradle/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,eclipse,netbeans
+src/it/unicam/cs/asdl2021/totalproject2/DACOMPILARE.txt
