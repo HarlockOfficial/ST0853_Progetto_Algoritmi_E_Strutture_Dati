@@ -195,3 +195,4 @@ nbdist/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,eclipse,netbeans
 src/it/unicam/cs/asdl2021/totalproject2/DACOMPILARE.txt
+*.txt
