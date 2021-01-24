@@ -104,6 +104,9 @@ public class AdjacencyMatrixDirectedGraph<L> extends Graph<L> {
             return false;
         }
         nodesIndex.put(node, nodesIndex.size());
+        for(ArrayList<GraphEdge<L>> arr:matrix){
+            arr.add(null);
+        }
         ArrayList<GraphEdge<L>> tmp = new ArrayList<>();
         for(int i =0;i<=matrix.size();++i){
             tmp.add(null);
