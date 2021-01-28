@@ -113,7 +113,6 @@ public class BellmanFordShortestPathComputer<L>
         return graph;
     }
 
-    //TODO check might be wrong
     @Override
     public List<GraphEdge<L>> getShortestPathTo(GraphNode<L> targetNode) {
         if(targetNode==null){
@@ -133,7 +132,7 @@ public class BellmanFordShortestPathComputer<L>
                 break;
             }
         }
-        //unnecessary assert, checked in if in line 122, done to avoid warning in line 139
+        //unnecessary assert, checked in if in line 121, done to avoid warning in line 138
         assert(lastNode!=null);
         while (true){
             GraphNode<L> prev = lastNode.getPrevious();

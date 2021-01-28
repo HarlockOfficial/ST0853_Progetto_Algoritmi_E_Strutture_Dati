@@ -1,5 +1,7 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,8 +23,9 @@ import java.util.List;
  */
 public class DijkstraShortestPathComputer<L>
         implements SingleSourceShortestPathComputer<L> {
-
-    // TODO inserire le variabili istanza necessarie
+    private final Graph<L> graph;
+    private boolean solved;
+    private GraphNode<L> lastSource;
 
     /**
      * Crea un calcolatore di cammini minimi a sorgente singola per un grafo
@@ -48,38 +51,109 @@ public class DijkstraShortestPathComputer<L>
      *                                      un peso negativo
      */
     public DijkstraShortestPathComputer(Graph<L> graph) {
-        // TODO implementare
+        if(graph==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(graph.isEmpty() || !graph.isDirected() || graph.getEdges().isEmpty()){
+            throw new IllegalArgumentException("Invalid Graph passed");
+        }
+        for(GraphEdge<L> edge: graph.getEdges()){
+            if(!edge.hasWeight() || edge.getWeight()<0){
+                throw new IllegalArgumentException("Invalid Graph passed");
+            }
+        }
+        this.graph=graph;
+        solved=false;
+        lastSource=null;
     }
 
     @Override
     public void computeShortestPathsFrom(GraphNode<L> sourceNode) {
-        // TODO implementare
-
+        if(sourceNode==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!graph.getNodes().contains(sourceNode)){
+            throw new IllegalArgumentException("Invalid Node passed");
+        }
+        BinaryHeapMinPriorityQueue queue = new BinaryHeapMinPriorityQueue();
+        for(GraphNode<L> node: graph.getNodes()){
+            if(sourceNode.equals(node)){
+                node.setFloatingPointDistance(0.0);
+                queue.insert(node);
+            }else{
+                node.setFloatingPointDistance(Double.POSITIVE_INFINITY);
+            }
+        }
+        while(!queue.isEmpty()){
+            //noinspection unchecked
+            GraphNode<L> current = (GraphNode<L>) queue.extractMinimum();
+            for(GraphEdge<L> edge: graph.getEdgesOf(current)){
+                double distance = current.getFloatingPointDistance()+edge.getWeight();
+                if(distance<edge.getNode2().getFloatingPointDistance()){
+                    edge.getNode2().setFloatingPointDistance(distance);
+                    edge.getNode2().setPrevious(current);
+                    queue.insert(edge.getNode2());
+                }
+            }
+        }
+        lastSource=sourceNode;
+        solved=true;
     }
 
     @Override
     public boolean isComputed() {
-        // TODO implementare
-        return false;
+        return solved;
     }
 
     @Override
     public GraphNode<L> getLastSource() {
-        // TODO implementare
-        return null;
+        if(lastSource==null){
+            throw new IllegalStateException("Must solve at least once before calling this function");
+        }
+        return lastSource;
     }
 
     @Override
     public Graph<L> getGraph() {
-        // TODO implementare
-        return null;
+        return graph;
     }
 
     @Override
     public List<GraphEdge<L>> getShortestPathTo(GraphNode<L> targetNode) {
-        // TODO implementare
-        return null;
-    }
+        if(targetNode==null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        if(!graph.getNodes().contains(targetNode)){
+            throw new IllegalArgumentException("Invalid Node passed");
+        }
+        if(lastSource==null){
+            throw new IllegalStateException("Must solve at least once before calling this function");
+        }
+        List<GraphEdge<L>> shortestPath = new ArrayList<>();
+        GraphNode<L> lastNode = null;
+        for(GraphNode<L> node: graph.getNodes()){
+            if(targetNode.equals(node)){
+                lastNode = node;
+                break;
+            }
+        }
+        //unnecessary assert, checked in if in line 126, done to avoid warning in line 143
+        assert(lastNode!=null);
+        while (true){
+            GraphNode<L> prev = lastNode.getPrevious();
+            for(GraphEdge<L> edge: graph.getIngoingEdgesOf(lastNode)){
+                if(edge.getNode1().equals(prev)) {
+                    shortestPath.add(edge);
+                    break;
+                }
+            }
+            if(prev.equals(lastSource)){
+                break;
+            }
+            lastNode=prev;
+        }
 
-    // TODO inserire eventuali altri metodi accessori
+        Collections.reverse(shortestPath);
+        return shortestPath;
+    }
 }

@@ -15,27 +15,24 @@ import java.util.NoSuchElementException;
  * viene spostato in un'altra posizione.
  * 
  * @author Template: Luca Tesei
- * 
+ *
  * @param <E>
  *                il tipo degli elementi che vengono inseriti in coda.
  *
  */
 public class BinaryHeapMinPriorityQueue {
-
     /*
      * ArrayList per la rappresentazione dello heap. Vengono usate tutte le
      * posizioni (la radice dello heap è quindi in posizione 0).
      */
-    private ArrayList<PriorityQueueElement> heap;
-
-    // TODO implementare: inserire eventuali altre variabili istanza
+    private final ArrayList<PriorityQueueElement> heap;
 
     /**
      * Crea una coda con priorità vuota.
      * 
      */
     public BinaryHeapMinPriorityQueue() {
-        // TODO implementare
+        heap = new ArrayList<>();
     }
 
     /**
@@ -50,7 +47,12 @@ public class BinaryHeapMinPriorityQueue {
      *                                  if the element passed is null
      */
     public void insert(PriorityQueueElement element) {
-        // TODO implementare
+        if(element == null){
+            throw new NullPointerException("Passed parameter must be not null");
+        }
+        element.setHandle(heap.size());
+        heap.add(element);
+        heapifyUp(heap.size()-1);
     }
 
     /**
@@ -63,8 +65,10 @@ public class BinaryHeapMinPriorityQueue {
      *                                    if this min-priority queue is empty
      */
     public PriorityQueueElement minimum() {
-        // TODO implementare
-        return null;
+        if(heap.isEmpty()){
+            throw new NoSuchElementException("Heap is empty, cannot obrain first element");
+        }
+        return heap.get(0);
     }
 
     /**
@@ -76,8 +80,17 @@ public class BinaryHeapMinPriorityQueue {
      *                                    if this min-priority queue is empty
      */
     public PriorityQueueElement extractMinimum() {
-        // TODO implementare
-        return null;
+        if(heap.isEmpty()){
+            throw new NoSuchElementException("Heap is empty, cannot obrain first element");
+        }
+        PriorityQueueElement out = heap.get(0);
+        PriorityQueueElement last = heap.remove(heap.size() - 1);
+        if(heap.size()>0) {
+            last.setHandle(0);
+            heap.set(0, last);
+            heapifyDown(0);
+        }
+        return out;
     }
 
     /**
@@ -102,8 +115,14 @@ public class BinaryHeapMinPriorityQueue {
      */
     public void decreasePriority(PriorityQueueElement element,
             double newPriority) {
-        // TODO implementare
-
+        if(element==null || element.getHandle()<0 || element.getHandle()>=heap.size()){
+            throw new NoSuchElementException("Element not present in Heap");
+        }
+        if(newPriority>=heap.get(element.getHandle()).getPriority()){
+            throw new IllegalArgumentException("Passed priority is not valid");
+        }
+        heap.get(element.getHandle()).setPriority(newPriority);
+        heapifyUp(element.getHandle());
     }
 
     /**
@@ -112,8 +131,7 @@ public class BinaryHeapMinPriorityQueue {
      * @return true if this priority queue is empty, false otherwise
      */
     public boolean isEmpty() {
-        // TODO implementare
-        return false;
+        return heap.isEmpty();
     }
 
     /**
@@ -122,8 +140,7 @@ public class BinaryHeapMinPriorityQueue {
      * @return the number of elements currently in this queue.
      */
     public int size() {
-        // TODO implementare
-        return 0;
+        return heap.size();
     }
 
     /**
@@ -134,6 +151,83 @@ public class BinaryHeapMinPriorityQueue {
         this.heap.clear();
     }
 
-    // TODO inserire eventuali altri metodi privati per scopi di implementazione
+    /*
+     * done in logaritmic time, because node is just scanned against parent,
+     * so worst case scenario is tree height
+     */
+    private void heapifyUp(int startPosition) {
+        int parentIndex = getParentNode(startPosition);
+        PriorityQueueElement parent = heap.get(parentIndex);
+        PriorityQueueElement element = heap.get(startPosition);
+        while(parent.getPriority()>element.getPriority()){
+            heap.set(element.getHandle(), parent);
+            heap.set(parent.getHandle(), element);
 
+            parent.setHandle(element.getHandle());
+            element.setHandle(parentIndex);
+
+            parentIndex = getParentNode(parentIndex);
+            if(parentIndex<0){
+                //root reached
+                break;
+            }
+            parent = heap.get(parentIndex);
+        }
+    }
+    /*
+     * useless to maintain startPosition, since is used only once in the code
+     * with the actual value 0, but it could be used in other implementations with
+     * different start position
+     * Function done in logaritmic time since the node is scanned always against the
+     * smallest priority child, then the max number of checks is the height of the tree
+     */
+    private void heapifyDown(@SuppressWarnings("SameParameterValue") int startPosition) {
+        int childIndex = getBestChildIndex(startPosition);
+        if(childIndex==-1){
+            return;
+        }
+        PriorityQueueElement child = heap.get(childIndex);
+        PriorityQueueElement element = heap.get(startPosition);
+        while (child.getPriority()<element.getPriority()){
+            heap.set(element.getHandle(), child);
+            heap.set(child.getHandle(), element);
+
+            child.setHandle(element.getHandle());
+            element.setHandle(childIndex);
+
+            childIndex = getBestChildIndex(element.getHandle());
+            if(childIndex==-1){
+                break;
+            }
+            child = heap.get(childIndex);
+        }
+    }
+    private int getParentNode(int childIndex){
+        return (childIndex-1)/2;
+    }
+    private int getChildNode(int parentIndex, Position pos){
+        return 2*parentIndex+(pos.value?1:2);
+    }
+    private int getBestChildIndex(int parentIndex){
+        int leftChildIndex = getChildNode(parentIndex, Position.LEFT);
+        int rightChildIndex = getChildNode(parentIndex, Position.RIGHT);
+        if(leftChildIndex>0 && leftChildIndex<heap.size()){
+            if(rightChildIndex>0 && rightChildIndex<heap.size()){
+                return heap.get(leftChildIndex).getPriority()<heap.get(rightChildIndex).getPriority()?
+                        leftChildIndex:rightChildIndex;
+            }
+            return leftChildIndex;
+        }
+        if(rightChildIndex>0 && rightChildIndex<heap.size()) {
+            return rightChildIndex;
+        }
+        return -1;
+    }
+    private enum Position{
+        LEFT(true), RIGHT(false);
+        public final boolean value;
+        private Position(boolean value){
+            this.value=value;
+        }
+    }
 }
