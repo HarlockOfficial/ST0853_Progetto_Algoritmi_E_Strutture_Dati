@@ -51,9 +51,9 @@ public class KruskalMSP<L> {
      */
     public Set<GraphEdge<L>> computeMSP(Graph<L> g) {
         // TODO implementare
+        //https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
         return null;
     }
 
-    // TODO implementare: inserire eventuali metodi privati per fini di
-    // implementazione
+    // TODO implementare: inserire eventuali metodi privati per fini di implementazione
 }

@@ -54,9 +54,9 @@ public class PrimMSP<L> {
      */
     public void computeMSP(Graph<L> g, GraphNode<L> s) {
         // TODO implementare
+        //https://en.wikipedia.org/wiki/Prim%27s_algorithm
     }
 
-    // TODO implementare: inserire eventuali metodi privati per rendere
-    // l'implementazione più modulare
+    // TODO implementare: inserire eventuali metodi privati per rendere l'implementazione più modulare
 
 }

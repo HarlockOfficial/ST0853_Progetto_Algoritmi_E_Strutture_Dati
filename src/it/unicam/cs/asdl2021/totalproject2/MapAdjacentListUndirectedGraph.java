@@ -1,5 +1,6 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -65,14 +66,16 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
 
     @Override
     public int nodeCount() {
-        // TODO implementare
-        return -1;
+        return adjacentLists.size();
     }
 
     @Override
     public int edgeCount() {
-        // TODO implementare
-        return -1;
+        int count = 0;
+        for(GraphNode<L> node: adjacentLists.keySet()){
+            count += adjacentLists.get(node).size();
+        }
+        return count;
     }
 
     @Override
@@ -88,31 +91,60 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
 
     @Override
     public Set<GraphNode<L>> getNodes() {
-        // TODO implementare
-        return null;
+        return adjacentLists.keySet();
     }
 
     @Override
     public boolean addNode(GraphNode<L> node) {
-        // TODO implementare
-        return false;
+        if(node==null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(adjacentLists.containsKey(node)){
+            return false;
+        }
+        adjacentLists.put(node, new HashSet<>());
+        return true;
     }
 
     @Override
     public boolean removeNode(GraphNode<L> node) {
-        // TODO implementare
-        return false;
+        if(node == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(node)){
+            return false;
+        }
+        adjacentLists.remove(node);
+        for(GraphNode<L> node1: adjacentLists.keySet()){
+            Set<GraphEdge<L>> edges = new HashSet<>();
+            for(GraphEdge<L> edge: adjacentLists.get(node1)){
+                if(!node.equals(edge.getNode2())){
+                    edges.add(edge);
+                }
+            }
+            adjacentLists.replace(node1, edges);
+        }
+        return true;
     }
 
     @Override
     public boolean containsNode(GraphNode<L> node) {
-        // TODO implementare
-        return false;
+        if(node == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        return adjacentLists.containsKey(node);
     }
 
     @Override
     public GraphNode<L> getNodeOf(L label) {
-        // TODO implementare
+        if(label == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        for(GraphNode<L> node: adjacentLists.keySet()){
+            if(node.getLabel().equals(label)){
+                return node;
+            }
+        }
         return null;
     }
 
@@ -133,8 +165,23 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
 
     @Override
     public Set<GraphNode<L>> getAdjacentNodesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter should be part of the graph");
+        }
+        Set<GraphNode<L>> out = new HashSet<>();
+        for(GraphNode<L> node1: adjacentLists.keySet()){
+            for(GraphEdge<L> edge: adjacentLists.get(node1)){
+                if(node.equals(edge.getNode2())){
+                    out.add(edge.getNode1());
+                }else if(node.equals(edge.getNode1())){
+                    out.add(edge.getNode2());
+                }
+            }
+        }
+        return out;
     }
 
     @Override
@@ -145,32 +192,86 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
 
     @Override
     public Set<GraphEdge<L>> getEdges() {
-        // TODO implementare
-        return null;
+        Set<GraphEdge<L>> out = new HashSet<>();
+        for(GraphNode<L> node: adjacentLists.keySet()){
+            out.addAll(adjacentLists.get(node));
+        }
+        return out;
     }
 
     @Override
     public boolean addEdge(GraphEdge<L> edge) {
-        // TODO implementare
-        return false;
-    }
-
-    @Override
-    public boolean removeEdge(GraphEdge<L> edge) {
-        // TODO implementare
-        return false;
-    }
-
-    @Override
-    public boolean containsEdge(GraphEdge<L> edge) {
-        // TODO implementare
+        if(edge==null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(edge.getNode1()) || !adjacentLists.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("All nodes of the edge must belong to the graph");
+        }
+        if(edge.isDirected()!=isDirected()){
+            throw new IllegalArgumentException("Invalid edge passed");
+        }
+        for(GraphEdge<L> edge1: getEdges()){
+            if(edge.equals(edge1)){
+                return false;
+            }
+        }
+        adjacentLists.get(edge.getNode1()).add(edge);
         return true;
     }
 
     @Override
+    public boolean removeEdge(GraphEdge<L> edge) {
+        if(edge==null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(edge.getNode1()) || !adjacentLists.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("All nodes of the edge must belong to the graph");
+        }
+        return adjacentLists.get(edge.getNode1()).remove(edge) || adjacentLists.get(edge.getNode2()).remove(edge);
+    }
+
+    @Override
+    public boolean containsEdge(GraphEdge<L> edge) {
+        if(edge==null){
+            throw new NullPointerException("Parameter passed cannot be null");
+        }
+        if(!adjacentLists.containsKey(edge.getNode1()) || !adjacentLists.containsKey(edge.getNode2())){
+            throw new IllegalArgumentException("All nodes of the edge have to be part of the graph");
+        }
+        for(GraphEdge<L> edge1: adjacentLists.get(edge.getNode1())){
+            if(edge.getNode2().equals(edge1.getNode2())){
+                return true;
+            }
+        }
+        for(GraphEdge<L> edge1: adjacentLists.get(edge.getNode2())){
+            if(edge.getNode1().equals(edge1.getNode2())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Set<GraphEdge<L>> getEdgesOf(GraphNode<L> node) {
-        // TODO implementare
-        return null;
+        if(node == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(node)){
+            throw new IllegalArgumentException("Passed parameter should be part of graph");
+        }
+        Set<GraphEdge<L>> out = new HashSet<>();
+        for(GraphNode<L> node1: adjacentLists.keySet()){
+            if(node.equals(node1)){
+                out.addAll(adjacentLists.get(node1));
+            }else {
+                for (GraphEdge<L> edge : adjacentLists.get(node1)) {
+                    if (node.equals(edge.getNode2())){
+                        out.add(edge);
+                    }
+                }
+            }
+        }
+        return out;
     }
 
     @Override
@@ -181,7 +282,22 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
 
     @Override
     public GraphEdge<L> getEdge(GraphNode<L> node1, GraphNode<L> node2) {
-        // TODO implementare
+        if(node1 == null || node2 == null){
+            throw new NullPointerException("Passed parameter cannot be null");
+        }
+        if(!adjacentLists.containsKey(node1) || adjacentLists.containsKey(node2)){
+            throw new IllegalArgumentException("All passed nodes have to be part of the graph");
+        }
+        for(GraphEdge<L> edge: adjacentLists.get(node1)){
+            if(edge.getNode2().equals(node2)){
+                return edge;
+            }
+        }
+        for(GraphEdge<L> edge: adjacentLists.get(node2)){
+            if(edge.getNode2().equals(node1)){
+                return edge;
+            }
+        }
         return null;
     }
 
@@ -190,5 +306,4 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
         throw new UnsupportedOperationException(
                 "Operazioni con indici non supportate");
     }
-
 }
