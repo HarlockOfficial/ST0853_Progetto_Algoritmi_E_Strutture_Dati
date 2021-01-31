@@ -285,7 +285,7 @@ public class MapAdjacentListUndirectedGraph<L> extends Graph<L> {
         if(node1 == null || node2 == null){
             throw new NullPointerException("Passed parameter cannot be null");
         }
-        if(!adjacentLists.containsKey(node1) || adjacentLists.containsKey(node2)){
+        if(!adjacentLists.containsKey(node1) || !adjacentLists.containsKey(node2)){
             throw new IllegalArgumentException("All passed nodes have to be part of the graph");
         }
         for(GraphEdge<L> edge: adjacentLists.get(node1)){

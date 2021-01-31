@@ -2,9 +2,7 @@ package it.unicam.cs.asdl2021.totalproject2;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,11 +18,11 @@ class AdjacencyMatrixDirectedGraphTest {
         AdjacencyMatrixDirectedGraph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
         Random generator = new Random(123456);
         for(int i=0;i<100;++i){
-            assertEquals(graph.nodeCount(), i);
+            assertEquals(i, graph.nodeCount());
             // assuming that addNode works
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
-        assertEquals(graph.nodeCount(), 100);
+        assertEquals(100, graph.nodeCount());
     }
 
     @Test
@@ -37,7 +35,7 @@ class AdjacencyMatrixDirectedGraphTest {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         for(int i=0;i<4000;++i){
-            assertEquals(graph.edgeCount(), i);
+            assertEquals(i, graph.edgeCount());
             boolean result;
             do {
                 // assuming that getNodeAtIndex works
@@ -47,7 +45,7 @@ class AdjacencyMatrixDirectedGraphTest {
                 result = graph.addEdge(new GraphEdge<>(node1, node2, true, generator.nextInt()));
             }while (!result);
         }
-        assertEquals(graph.edgeCount(), 4000);
+        assertEquals(4000, graph.edgeCount());
     }
 
     @Test
@@ -451,13 +449,19 @@ class AdjacencyMatrixDirectedGraphTest {
             // assuming that addNode works
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
+        List<GraphEdge<Integer>> edgesList = new ArrayList<>();
         for(int i=0;i<4000;++i){
-            // assuming that getNodeAtIndex works
-            GraphNode<Integer> node1 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
-            GraphNode<Integer> node2 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
-            // assuming that addEdge works
-            GraphEdge<Integer> edge = new GraphEdge<>(node1, node2, true, generator.nextInt());
-            graph.addEdge(edge);
+            GraphEdge<Integer> edge;
+            do {
+                // assuming that getNodeAtIndex works
+                GraphNode<Integer> node1 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
+                GraphNode<Integer> node2 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
+                // assuming that addEdge works
+                edge = new GraphEdge<>(node1, node2, true, generator.nextInt());
+            }while (edgesList.contains(edge));
+            edgesList.add(edge);
+            assertTrue(graph.addEdge(edge));
+            assertFalse(graph.addEdge(edge));
         }
         assertThrows(IllegalArgumentException.class, () -> graph.addEdge(
                 new GraphEdge<>(graph.getNodeAtIndex(0),
@@ -519,7 +523,6 @@ class AdjacencyMatrixDirectedGraphTest {
             assertTrue(graph.removeEdge(edge));
             assertFalse(graph.removeEdge(edge));
         }
-
     }
 
     @Test
