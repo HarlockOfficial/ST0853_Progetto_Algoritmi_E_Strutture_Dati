@@ -131,6 +131,9 @@ public class DijkstraShortestPathComputer<L>
         }
         List<GraphEdge<L>> shortestPath = new ArrayList<>();
         GraphNode<L> lastNode = null;
+        if(targetNode.equals(lastSource)){
+            return shortestPath;
+        }
         for(GraphNode<L> node: graph.getNodes()){
             if(targetNode.equals(node)){
                 lastNode = node;
@@ -141,6 +144,9 @@ public class DijkstraShortestPathComputer<L>
         assert(lastNode!=null);
         while (true){
             GraphNode<L> prev = lastNode.getPrevious();
+            if(prev==null){
+                break;
+            }
             for(GraphEdge<L> edge: graph.getIngoingEdgesOf(lastNode)){
                 if(edge.getNode1().equals(prev)) {
                     shortestPath.add(edge);
@@ -152,8 +158,10 @@ public class DijkstraShortestPathComputer<L>
             }
             lastNode=prev;
         }
-
-        Collections.reverse(shortestPath);
-        return shortestPath;
+        if(!shortestPath.isEmpty()) {
+            Collections.reverse(shortestPath);
+            return shortestPath;
+        }
+        return null;
     }
 }
