@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 
@@ -14,11 +13,100 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  *
  */
 class DijkstraShortestPathComputerTest {
+    @Test
+    final void testDijkstraShortestPathComputer(){
+        //null graph
+        assertThrows(NullPointerException.class, () -> new DijkstraShortestPathComputer<>(null));
+        Graph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
+        Graph<Integer> finalGraph = graph;
+        //empty graph
+        assertThrows(IllegalArgumentException.class, () -> new DijkstraShortestPathComputer<>(finalGraph));
+        graph = new MapAdjacentListUndirectedGraph<>();
+        graph.addNode(new GraphNode<>(1));
+        graph.addNode(new GraphNode<>(2));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(1), new GraphNode<>(2), false, 12.3));
+        Graph<Integer> finalGraph1 = graph;
+        //undirected graph
+        assertThrows(IllegalArgumentException.class, () -> new DijkstraShortestPathComputer<>(finalGraph1));
+        graph = new AdjacencyMatrixDirectedGraph<>();
+        graph.addNode(new GraphNode<>(1));
+        graph.addNode(new GraphNode<>(2));
+        graph.addNode(new GraphNode<>(3));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(1), new GraphNode<>(2), true, 12));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(3), true));
+        Graph<Integer> finalGraph2 = graph;
+        //not weighted edges
+        assertThrows(IllegalArgumentException.class, () -> new DijkstraShortestPathComputer<>(finalGraph2));
+        graph.removeEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(3), true));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(3), true, -1));
+        Graph<Integer> finalGraph3 = graph;
+        //regative weighted edges
+        assertThrows(IllegalArgumentException.class, () -> new DijkstraShortestPathComputer<>(finalGraph3));
+        graph.removeEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(3), true));
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        assertFalse(solver.isComputed());
+        assertEquals(graph, solver.getGraph());
+        assertThrows(IllegalStateException.class, () -> solver.getLastSource());
+    }
 
-    // TODO implementare: inserire i test che controllano le eccezioni
+    private Graph<Integer> getValidGraph(){
+        Graph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
+        graph.addNode(new GraphNode<>(1));
+        graph.addNode(new GraphNode<>(2));
+        graph.addNode(new GraphNode<>(3));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(1), new GraphNode<>(2), true, 9.8));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(1), true, 8.7));
+        graph.addEdge(new GraphEdge<>(new GraphNode<>(2), new GraphNode<>(3), true, 7.6));
+        return graph;
+    }
 
-    // TODO implementare: inserire i test che controllano lastSource e
-    // isComputed
+    @Test
+    final void testComputeShortestPathFrom(){
+        Graph<Integer> graph = getValidGraph();
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        assertThrows(NullPointerException.class, () -> solver.computeShortestPathsFrom(null));
+        assertThrows(IllegalArgumentException.class, () -> solver.computeShortestPathsFrom(new GraphNode<>(4)));
+        assertFalse(solver.isComputed());
+        solver.computeShortestPathsFrom(new GraphNode<>(2));
+        assertTrue(solver.isComputed());
+    }
+
+    @Test
+    final void testIsComputed(){
+        Graph<Integer> graph = getValidGraph();
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        assertFalse(solver.isComputed());
+        solver.computeShortestPathsFrom(new GraphNode<>(1));
+        assertTrue(solver.isComputed());
+    }
+
+    @Test
+    final void testGetLastSource(){
+        Graph<Integer> graph = getValidGraph();
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        assertThrows(IllegalStateException.class, () -> solver.getLastSource());
+        solver.computeShortestPathsFrom(new GraphNode<>(1));
+        assertEquals(new GraphNode<>(1), solver.getLastSource());
+    }
+
+    @Test
+    final void testGetGraph(){
+        Graph<Integer> graph = getValidGraph();
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        //cannot test with different graph with same content, because equals is not implemented
+        //in Graph or in AdjacencyMatrixDirectedGraph
+        assertEquals(graph, solver.getGraph());
+    }
+
+    @Test
+    final void testGetShortestPathToErrorsOnly(){
+        Graph<Integer> graph = getValidGraph();
+        SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
+        assertThrows(IllegalStateException.class, () -> solver.getShortestPathTo(new GraphNode<>(2)));
+        solver.computeShortestPathsFrom(new GraphNode<>(1));
+        assertThrows(NullPointerException.class, () -> solver.getShortestPathTo(null));
+        assertThrows(IllegalArgumentException.class, () -> solver.getShortestPathTo(new GraphNode<>(4)));
+    }
 
     @Test
     final void testGetShortestPathTo1() {
@@ -54,8 +142,7 @@ class DijkstraShortestPathComputerTest {
         g.addEdge(eyv);
         GraphEdge<String> evy = new GraphEdge<>(nv, ny, true, 4.07);
         g.addEdge(evy);
-        DijkstraShortestPathComputer<String> c = new DijkstraShortestPathComputer<String>(
-                g);
+        DijkstraShortestPathComputer<String> c = new DijkstraShortestPathComputer<>(g);
         GraphNode<String> nsTest = new GraphNode<>("s");
         c.computeShortestPathsFrom(nsTest);
         List<GraphEdge<String>> pathTest = new ArrayList<>();
@@ -123,7 +210,7 @@ class DijkstraShortestPathComputerTest {
         GraphEdge<String> epv = new GraphEdge<>(np, nv, true, 1.0);
         g.addEdge(epv);
         // p è collegato a v, ma non è raggiungibile da s
-        DijkstraShortestPathComputer<String> c = new DijkstraShortestPathComputer<String>(
+        DijkstraShortestPathComputer<String> c = new DijkstraShortestPathComputer<>(
                 g);
         GraphNode<String> nsTest = new GraphNode<>("s");
         c.computeShortestPathsFrom(nsTest);
