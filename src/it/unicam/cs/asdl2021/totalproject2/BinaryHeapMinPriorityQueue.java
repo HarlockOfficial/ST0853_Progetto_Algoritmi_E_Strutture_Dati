@@ -13,12 +13,9 @@ import java.util.NoSuchElementException;
  * ArrayList la handle è semplicemente l'indice dove si trova l'elemento
  * nell'ArrayList. Tale campo naturalmente va tenuto aggiornato se l'elemento
  * viene spostato in un'altra posizione.
- * 
+ *
+ * @param <E> il tipo degli elementi che vengono inseriti in coda.
  * @author Template: Luca Tesei
- *
- * @param <E>
- *                il tipo degli elementi che vengono inseriti in coda.
- *
  */
 public class BinaryHeapMinPriorityQueue {
     /*
@@ -29,7 +26,6 @@ public class BinaryHeapMinPriorityQueue {
 
     /**
      * Crea una coda con priorità vuota.
-     * 
      */
     public BinaryHeapMinPriorityQueue() {
         heap = new ArrayList<>();
@@ -40,32 +36,28 @@ public class BinaryHeapMinPriorityQueue {
      * associated with the element will be used to place it in the correct
      * position in the heap. The handle of the element will also be set
      * accordingly.
-     * 
-     * @param element
-     *                    the new element to add
-     * @throws NullPointerException
-     *                                  if the element passed is null
+     *
+     * @param element the new element to add
+     * @throws NullPointerException if the element passed is null
      */
     public void insert(PriorityQueueElement element) {
-        if(element == null){
+        if (element == null) {
             throw new NullPointerException("Passed parameter must be not null");
         }
         element.setHandle(heap.size());
         heap.add(element);
-        heapifyUp(heap.size()-1);
+        heapifyUp(heap.size() - 1);
     }
 
     /**
      * Returns the current minimum element of this min-priority queue without
      * extracting it. This operation does not affect the heap.
-     * 
+     *
      * @return the current minimum element of this min-priority queue
-     * 
-     * @throws NoSuchElementException
-     *                                    if this min-priority queue is empty
+     * @throws NoSuchElementException if this min-priority queue is empty
      */
     public PriorityQueueElement minimum() {
-        if(heap.isEmpty()){
+        if (heap.isEmpty()) {
             throw new NoSuchElementException("Heap is empty, cannot obrain first element");
         }
         return heap.get(0);
@@ -74,18 +66,17 @@ public class BinaryHeapMinPriorityQueue {
     /**
      * Extract the current minimum element from this min-priority queue. The
      * ternary heap will be updated accordingly.
-     * 
+     *
      * @return the current minimum element
-     * @throws NoSuchElementException
-     *                                    if this min-priority queue is empty
+     * @throws NoSuchElementException if this min-priority queue is empty
      */
     public PriorityQueueElement extractMinimum() {
-        if(heap.isEmpty()){
+        if (heap.isEmpty()) {
             throw new NoSuchElementException("Heap is empty, cannot obrain first element");
         }
         PriorityQueueElement out = heap.get(0);
         PriorityQueueElement last = heap.remove(heap.size() - 1);
-        if(heap.size()>0) {
+        if (heap.size() > 0) {
             last.setHandle(0);
             heap.set(0, last);
             heapifyDown(0);
@@ -98,27 +89,22 @@ public class BinaryHeapMinPriorityQueue {
      * queue. The position of the element in the heap must be changed
      * accordingly. The changed element may become the minimum element. The
      * handle of the element will also be changed accordingly.
-     * 
-     * @param element
-     *                        the element whose priority will be decreased, it
-     *                        must currently be inside this min-priority queue
-     * @param newPriority
-     *                        the new priority to assign to the element
-     * 
-     * @throws NoSuchElementException
-     *                                      if the element is not currently
-     *                                      present in this min-priority queue
-     * @throws IllegalArgumentException
-     *                                      if the specified newPriority is not
-     *                                      strictly less than the current
-     *                                      priority of the element
+     *
+     * @param element     the element whose priority will be decreased, it
+     *                    must currently be inside this min-priority queue
+     * @param newPriority the new priority to assign to the element
+     * @throws NoSuchElementException   if the element is not currently
+     *                                  present in this min-priority queue
+     * @throws IllegalArgumentException if the specified newPriority is not
+     *                                  strictly less than the current
+     *                                  priority of the element
      */
     public void decreasePriority(PriorityQueueElement element,
-            double newPriority) {
-        if(element==null || element.getHandle()<0 || element.getHandle()>=heap.size()){
+                                 double newPriority) {
+        if (element == null || element.getHandle() < 0 || element.getHandle() >= heap.size()) {
             throw new NoSuchElementException("Element not present in Heap");
         }
-        if(newPriority>=heap.get(element.getHandle()).getPriority()){
+        if (newPriority >= heap.get(element.getHandle()).getPriority()) {
             throw new IllegalArgumentException("Passed priority is not valid");
         }
         heap.get(element.getHandle()).setPriority(newPriority);
@@ -127,7 +113,7 @@ public class BinaryHeapMinPriorityQueue {
 
     /**
      * Determines if this priority queue is empty.
-     * 
+     *
      * @return true if this priority queue is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -136,7 +122,7 @@ public class BinaryHeapMinPriorityQueue {
 
     /**
      * Return the current size of this queue.
-     * 
+     *
      * @return the number of elements currently in this queue.
      */
     public int size() {
@@ -159,7 +145,7 @@ public class BinaryHeapMinPriorityQueue {
         int parentIndex = getParentNode(startPosition);
         PriorityQueueElement parent = heap.get(parentIndex);
         PriorityQueueElement element = heap.get(startPosition);
-        while(parent.getPriority()>element.getPriority()){
+        while (parent.getPriority() > element.getPriority()) {
             heap.set(element.getHandle(), parent);
             heap.set(parent.getHandle(), element);
 
@@ -167,13 +153,14 @@ public class BinaryHeapMinPriorityQueue {
             element.setHandle(parentIndex);
 
             parentIndex = getParentNode(parentIndex);
-            if(parentIndex<0){
+            if (parentIndex < 0) {
                 //root reached
                 break;
             }
             parent = heap.get(parentIndex);
         }
     }
+
     /*
      * useless to maintain startPosition, since is used only once in the code
      * with the actual value 0, but it could be used in other implementations with
@@ -183,12 +170,12 @@ public class BinaryHeapMinPriorityQueue {
      */
     private void heapifyDown(@SuppressWarnings("SameParameterValue") int startPosition) {
         int childIndex = getBestChildIndex(startPosition);
-        if(childIndex==-1){
+        if (childIndex == -1) {
             return;
         }
         PriorityQueueElement child = heap.get(childIndex);
         PriorityQueueElement element = heap.get(startPosition);
-        while (child.getPriority()<element.getPriority()){
+        while (child.getPriority() < element.getPriority()) {
             heap.set(element.getHandle(), child);
             heap.set(child.getHandle(), element);
 
@@ -196,38 +183,43 @@ public class BinaryHeapMinPriorityQueue {
             element.setHandle(childIndex);
 
             childIndex = getBestChildIndex(element.getHandle());
-            if(childIndex==-1){
+            if (childIndex == -1) {
                 break;
             }
             child = heap.get(childIndex);
         }
     }
-    private int getParentNode(int childIndex){
-        return (childIndex-1)/2;
+
+    private int getParentNode(int childIndex) {
+        return (childIndex - 1) / 2;
     }
-    private int getChildNode(int parentIndex, Position pos){
-        return 2*parentIndex+(pos.value?1:2);
+
+    private int getChildNode(int parentIndex, Position pos) {
+        return 2 * parentIndex + (pos.value ? 1 : 2);
     }
-    private int getBestChildIndex(int parentIndex){
+
+    private int getBestChildIndex(int parentIndex) {
         int leftChildIndex = getChildNode(parentIndex, Position.LEFT);
         int rightChildIndex = getChildNode(parentIndex, Position.RIGHT);
-        if(leftChildIndex>0 && leftChildIndex<heap.size()){
-            if(rightChildIndex>0 && rightChildIndex<heap.size()){
-                return heap.get(leftChildIndex).getPriority()<heap.get(rightChildIndex).getPriority()?
-                        leftChildIndex:rightChildIndex;
+        if (leftChildIndex > 0 && leftChildIndex < heap.size()) {
+            if (rightChildIndex > 0 && rightChildIndex < heap.size()) {
+                return heap.get(leftChildIndex).getPriority() < heap.get(rightChildIndex).getPriority() ?
+                        leftChildIndex : rightChildIndex;
             }
             return leftChildIndex;
         }
-        if(rightChildIndex>0 && rightChildIndex<heap.size()) {
+        if (rightChildIndex > 0 && rightChildIndex < heap.size()) {
             return rightChildIndex;
         }
         return -1;
     }
-    private enum Position{
+
+    private enum Position {
         LEFT(true), RIGHT(false);
         public final boolean value;
-        private Position(boolean value){
-            this.value=value;
+
+        Position(boolean value) {
+            this.value = value;
         }
     }
 }

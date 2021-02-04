@@ -1,16 +1,14 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class KruskalMSPTest {
 
