@@ -18,6 +18,7 @@ public class KruskalMSP<L> {
      * Struttura dati per rappresentare gli insiemi disgiunti utilizzata
      * dall'algoritmo di Kruskal.
      */
+    private ArrayList<HashSet<GraphNode<L>>> disjointSets;
 
     // TODO implementare: inserire eventuali altre variabili istanza
 
