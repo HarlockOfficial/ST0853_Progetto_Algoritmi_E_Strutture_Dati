@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * <p>
  * L'algoritmo usa una coda di min priorità tra i nodi implementata dalla classe
  * TernaryHeapMinPriorityQueue. I nodi vengono visti come PriorityQueueElement
- * poichè la classe GraphNode<L> implementa questa interfaccia. Si noti che
+ * poiché la classe GraphNode<L> implementa questa interfaccia. Si noti che
  * nell'esecuzione dell'algoritmo è necessario utilizzare l'operazione di
  * decreasePriority.
  *
@@ -25,7 +25,7 @@ public class PrimMSP<L> {
     protected BinaryHeapMinPriorityQueue queue;
 
     /**
-     * Crea un nuovo algoritmo e inizializza la coda di prioritÃ  con una coda
+     * Crea un nuovo algoritmo e inizializza la coda di priorità con una coda
      * vuota.
      */
     public PrimMSP() {
@@ -37,15 +37,15 @@ public class PrimMSP<L> {
      * minimo in un grafo non orientato e pesato, con pesi degli archi non negativi.
      * Dopo l'esecuzione del metodo nei nodi del grafo il campo previous deve
      * contenere un puntatore a un nodo in accordo all'albero di copertura
-     * minimo calcolato, la cui radice Ã¨ il nodo sorgente passato.
+     * minimo calcolato, la cui radice è il nodo sorgente passato.
      *
      * @param g un grafo non orientato, pesato, con pesi non negativi
-     * @param s il nodo del grafo g sorgente, cioÃ¨ da cui parte il calcolo
-     *          dell'albero di copertura minimo. Tale nodo sarÃ  la radice
+     * @param s il nodo del grafo g sorgente, cioè da cui parte il calcolo
+     *          dell'albero di copertura minimo. Tale nodo sarà la radice
      *          dell'albero di copertura trovato
      * @throws NullPointerException     se il grafo g o il nodo sorgente s sono nulli
      * @throws IllegalArgumentException se il nodo sorgente s non esiste in g
-     * @throws IllegalArgumentException se il grafo g Ã¨ orientato, non pesato o
+     * @throws IllegalArgumentException se il grafo g è orientato, non pesato o
      *                                  con pesi negativi
      */
     public void computeMSP(Graph<L> g, GraphNode<L> s) {
