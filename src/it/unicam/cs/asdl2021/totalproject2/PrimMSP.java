@@ -1,20 +1,26 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
+import java.awt.List;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 /**
+ * 
  * Classe singoletto che implementa l'algoritmo di Prim per trovare un Minimum
  * Spanning Tree di un grafo non orientato, pesato e con pesi non negativi.
- * <p>
+ * 
  * L'algoritmo usa una coda di min priorità tra i nodi implementata dalla classe
  * TernaryHeapMinPriorityQueue. I nodi vengono visti come PriorityQueueElement
  * poiché la classe GraphNode<L> implementa questa interfaccia. Si noti che
  * nell'esecuzione dell'algoritmo è necessario utilizzare l'operazione di
  * decreasePriority.
- *
- * @param <L> etichette dei nodi del grafo
+ * 
  * @author Template: Luca Tesei
+ * 
+ * @param <L>
+ *                etichette dei nodi del grafo
+ *
  */
 public class PrimMSP<L> {
 
@@ -38,85 +44,97 @@ public class PrimMSP<L> {
      * Dopo l'esecuzione del metodo nei nodi del grafo il campo previous deve
      * contenere un puntatore a un nodo in accordo all'albero di copertura
      * minimo calcolato, la cui radice è il nodo sorgente passato.
-     *
-     * @param g un grafo non orientato, pesato, con pesi non negativi
-     * @param s il nodo del grafo g sorgente, cioè da cui parte il calcolo
-     *          dell'albero di copertura minimo. Tale nodo sarà la radice
-     *          dell'albero di copertura trovato
-     * @throws NullPointerException     se il grafo g o il nodo sorgente s sono nulli
-     * @throws IllegalArgumentException se il nodo sorgente s non esiste in g
-     * @throws IllegalArgumentException se il grafo g è orientato, non pesato o
-     *                                  con pesi negativi
+     * 
+     * @param g
+     *              un grafo non orientato, pesato, con pesi non negativi
+     * @param s
+     *              il nodo del grafo g sorgente, cioè da cui parte il calcolo
+     *              dell'albero di copertura minimo. Tale nodo sarà la radice
+     *              dell'albero di copertura trovato
+     * 
+     * @throw NullPointerException se il grafo g o il nodo sorgente s sono nulli
+     * @throw IllegalArgumentException se il nodo sorgente s non esiste in g
+     * @throw IllegalArgumentException se il grafo g è orientato, non pesato o
+     *        con pesi negativi
      */
     public void computeMSP(Graph<L> g, GraphNode<L> s) {
-        if (g == null || s == null)
-            throw new NullPointerException();
-        if (!g.containsNode(s) || g.isDirected())
-            throw new IllegalArgumentException();
-        for (GraphEdge<L> e : g.getEdges()) {
+    	if(g==null || s==null)
+    		throw new NullPointerException();
+    	if(!g.containsNode(s))
+    		throw new IllegalArgumentException();
+    	if (g.isDirected())
+            throw new IllegalArgumentException(
+                    "Tentativo di applicare l'algoritmo di Prim su un grafo orientato");
+        // Determina se tutti gli archi del grafo hanno un peso assegnato e, se
+        // sì, positivo o nullo
+        Set<GraphEdge<L>> edges = g.getEdges();
+        for (GraphEdge<L> e : edges) {
             if (!e.hasWeight())
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(
+                        "Tentativo di applicare l'algoritmo di Prim su un grafo con almeno un arco con peso non specificato");
             if (e.getWeight() < 0)
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(
+                        "Tentativo di applicare l'algoritmo di Prim su un grafo con almeno un arco con peso negativo");
         }
-
-        for (GraphNode<L> n : g.getNodes()) //mette tutte le priorità a infinito e i precedenti a null
+        
+boolean vAppartieneQ=false;
+        
+        GraphEdge<L> arcoUV=null;
+        
+        for(GraphNode<L> v:g.getNodes())
         {
-            n.setPriority(Double.POSITIVE_INFINITY);
-            n.setPrevious(null);
+        	v.setPriority(Double.MAX_VALUE);
+        	v.setPrevious(null);
         }
         s.setPriority(0);
-
-        for (GraphNode<L> node : g.getNodes())//inserisco tutti i nodi alla queue
-            queue.insert(node);
-
-        GraphNode<L> appNode;
-        while (queue.size() != 0) //ripete finche ci sono elementi nella size
+        for(GraphNode<L> nodo:g.getNodes())
         {
-            //noinspection unchecked
-            appNode = (GraphNode<L>) queue.extractMinimum(); //estrae il nodo con priorita minore
-            for (GraphNode<L> n : g.getAdjacentNodesOf(appNode)) {
-                GraphEdge<L> appArco = null;
-
-                for (GraphEdge<L> edge : g.getEdgesOf(appNode)) {
-                    if (edge.getNode1().equals(n) || edge.getNode2().equals(n)) //trova l'arco che collega il minimo estratto con il suo adiacente
-                        appArco = edge;
-                }
-
-                if (quequeContains(appNode) && appArco != null && appArco.getWeight() < n.getPriority()) {
-                    n.setPrevious(appNode);
-                    n.setPriority(appArco.getWeight());
-                }
-            }
+        	this.queue.insert(nodo);
+        }
+		GraphNode<L> u;
+        while(this.queue.size()!=0)
+        {
+        	u=(GraphNode<L>) this.queue.extractMinimum();
+        	for(GraphNode<L> v:g.getAdjacentNodesOf(u))
+        	{
+        		vAppartieneQ=quequeContains(v);
+        		
+    			for(GraphEdge<L> arco:g.getEdgesOf(u))
+    			{
+    				//poiché il grafo non è orientato bisogna controllare
+    				//ambo i nodi dell'arco per vedere se esso è l'arco che collega
+    				//il nodo u con il nodo v
+    				if(arco.getNode1().equals(v) || arco.getNode2().equals(v))
+    				{
+    					arcoUV=arco;
+    					break;
+    				}
+    			}
+    			if(vAppartieneQ && arcoUV.getWeight()<v.getPriority())
+    			{
+    				v.setPrevious(u);
+    				v.setPriority(arcoUV.getWeight());
+    			}
+        		
+        	}
         }
     }
 
-    private boolean quequeContains(GraphNode<L> a) //controlla se la queue contiene il nodo
-    {
-        ArrayList<PriorityQueueElement> elements = new ArrayList<>();
-        try {
-            while (true) {
-                if (a.equals(queue.minimum())) {
-                    for (PriorityQueueElement element : elements) {
-                        queue.insert(element);
-                    }
-                    return true;
-                }
-                elements.add(queue.extractMinimum());
-            }
-        } catch (NoSuchElementException e) {
-            for (PriorityQueueElement element : elements) {
-                queue.insert(element);
-            }
-            return false;
-        }
-        /*
-        for (PriorityQueueElement n : queue.getTernaryHeap()) {
-            if (n.equals(a))
-                return true;
-        }
-        return false;
-        */
-    }
+
+private boolean quequeContains(GraphNode<L> a) //controlla se la queue contiene il nodo
+{
+	 ArrayList<PriorityQueueElement>app = new ArrayList<PriorityQueueElement>();
+	 while(!queue.isEmpty())
+	 {
+		 app.add(queue.extractMinimum());
+	 }
+	 for(int i=0;i<app.size();i++)
+	 {
+		 queue.insert(app.get(i));
+	 }
+	 return app.contains(a);
+}
+    // TODO implementare: inserire eventuali metodi privati per rendere
+    // l'implementazione più modulare
 
 }
