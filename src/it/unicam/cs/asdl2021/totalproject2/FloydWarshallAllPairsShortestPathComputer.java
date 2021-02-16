@@ -1,6 +1,7 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -49,24 +50,29 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
      *                                  peso è {@code Double.NaN}
      */
     public FloydWarshallAllPairsShortestPathComputer(Graph<L> graph) {
-        this.graph = graph;
-        if (graph == null)
+        if (graph == null) {
             throw new NullPointerException();
-        if (graph.isEmpty())
+        }
+        if (graph.isEmpty()) {
             throw new IllegalArgumentException();
-        if (!graph.isDirected())
+        }
+        if (!graph.isDirected()) {
             throw new IllegalArgumentException();
+        }
         for (GraphEdge<L> e : graph.getEdges()) {
-            if (!e.hasWeight())
+            if (!e.hasWeight()) {
                 throw new IllegalArgumentException();
+            }
         }
 
-        costMatrix = new double[graph.size()][graph.size()];
-        predecessorMatrix = new int[graph.size()][graph.size()];
+        this.graph = graph;
+        costMatrix = new double[graph.nodeCount()][graph.nodeCount()];
+        predecessorMatrix = new int[graph.nodeCount()][graph.nodeCount()];
 
-        for (int i = 0; i < graph.size(); i++) {
-            for (int j = 0; j < graph.size(); j++) {
+        for (int i = 0; i < graph.nodeCount(); i++) {
+            for (int j = 0; j < graph.nodeCount(); j++) {
                 costMatrix[i][j] = Double.MAX_VALUE;
+                predecessorMatrix[i][j] = -1;
             }
         }
 
@@ -78,7 +84,6 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
             costMatrix[graph.getNodeIndexOf(e.getNode1().getLabel())][graph.getNodeIndexOf(e.getNode2().getLabel())] = e.getWeight();
             predecessorMatrix[graph.getNodeIndexOf(e.getNode1().getLabel())][graph.getNodeIndexOf(e.getNode2().getLabel())] = graph.getNodeIndexOf(e.getNode1().getLabel());
         }
-        // TODO implementare
     }
 
     /**
@@ -92,7 +97,6 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
      *                               di peso negativo.
      */
     public void computeShortestPaths() {
-        // TODO implementare
         int totalepeso = 0;
         for (GraphEdge<L> g : graph.getEdges()) {
             totalepeso += g.getWeight();
@@ -110,7 +114,6 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
             }
         }
         computato = true;
-
     }
 
     /**
@@ -119,7 +122,6 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
      * @return true se i cammini minimi sono stati calcolati, false altrimenti
      */
     public boolean isComputed() {
-        // TODO implementare
         return computato;
     }
 
@@ -158,19 +160,28 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
         if (!graph.containsNode(targetNode) || !graph.containsNode(sourceNode))
             throw new IllegalArgumentException();
         if (!isComputed())
-            throw new IllegalArgumentException();
-        // TODO implementare
+            throw new IllegalStateException();
 
-        List<GraphEdge<L>> toReturn = new ArrayList<>();
-        int indice1 = graph.getNodeIndexOf(targetNode.getLabel());
-        int indice2 = graph.getNodeIndexOf(sourceNode.getLabel());
-        if (predecessorMatrix[indice1][indice2] != -1) {
-            return toReturn;
-        } else {
-            while (indice1 != indice2) {
-                indice1 = predecessorMatrix[indice1][indice2];
-                toReturn.add(graph.getEdgeAtNodeIndexes(indice1, indice2));
+        List<GraphNode<L>> orderedNodes = new ArrayList<>();
+        int indice1 = graph.getNodeIndexOf(sourceNode.getLabel());
+        int indice2 = graph.getNodeIndexOf(targetNode.getLabel());
+        while (indice1 != indice2) {
+            GraphNode<L> node = graph.getNodeAtIndex(indice2);
+            orderedNodes.add(node);
+            indice2 = predecessorMatrix[indice1][indice2];
+            if(indice2<0){
+                return null;
             }
+        }
+        orderedNodes.add(graph.getNodeAtIndex(indice1));
+        Collections.reverse(orderedNodes);
+        List<GraphEdge<L>> toReturn = new ArrayList<>();
+        for(int i = 0;i<orderedNodes.size()-1;++i){
+            GraphEdge<L> edge = graph.getEdge(orderedNodes.get(i), orderedNodes.get(i+1));
+            if(edge == null){
+                return null;
+            }
+            toReturn.add(edge);
         }
         return toReturn;
     }
@@ -194,7 +205,13 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
      */
     public double getShortestPathCost(GraphNode<L> sourceNode,
                                       GraphNode<L> targetNode) {
-        // TODO implementare
+        if (sourceNode == null || targetNode == null)
+            throw new NullPointerException();
+        if (!graph.containsNode(targetNode) || !graph.containsNode(sourceNode))
+            throw new IllegalArgumentException();
+        if (!isComputed())
+            throw new IllegalStateException();
+
         return costMatrix[graph.getNodeIndexOf(sourceNode.getLabel())][graph.getNodeIndexOf(targetNode.getLabel())];
     }
 
@@ -214,7 +231,7 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
         if (path.isEmpty())
             return "[ ]";
         // Costruisco la stringa
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("[ ").append(path.get(0).getNode1().toString());
         for (GraphEdge<L> lGraphEdge : path)
             s.append(" -- ").append(lGraphEdge.getWeight()).append(" --> ").append(lGraphEdge.getNode2().toString());
@@ -235,7 +252,4 @@ public class FloydWarshallAllPairsShortestPathComputer<L> {
     public int[][] getPredecessorMatrix() {
         return predecessorMatrix;
     }
-
-
-    // TODO inserire eventuali metodi privati per fini di implementazione
 }

@@ -1,10 +1,6 @@
 package it.unicam.cs.asdl2021.totalproject2;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * Classe singoletto che implementa l'algoritmo di Kruskal per trovare un
@@ -19,17 +15,17 @@ public class KruskalMSP<L> {
     /*
      * Comparatore tra archi in base al peso.
      */
-    private EdgesComparator edgesComparator;
+    private final EdgesComparator edgesComparator;
 
     /*
      * Struttura dati per rappresentare gli insiemi disgiunti utilizzata
      * dall'algoritmo di Kruskal.
      */
-    private ArrayList<HashSet<GraphNode<L>>> disjointSets;
+    private final ArrayList<HashSet<GraphNode<L>>> disjointSets;
 
     public KruskalMSP() {
         this.edgesComparator = new EdgesComparator();
-        this.disjointSets = new ArrayList<HashSet<GraphNode<L>>>();
+        this.disjointSets = new ArrayList<>();
     }
 
     /**
@@ -42,8 +38,8 @@ public class KruskalMSP<L> {
      *              un grafo non orientato, pesato, con pesi non negativi
      * @return l'insieme degli archi del grafo g che costituiscono l'albero di
      *         copertura minimo trovato
-     * @throw NullPointerException se il grafo g � null
-     * @throw IllegalArgumentException se il grafo g � orientato, non pesato o
+     * @throws NullPointerException se il grafo g � null
+     * @throws IllegalArgumentException se il grafo g � orientato, non pesato o
      *        con pesi negativi
      */
     public Set<GraphEdge<L>> computeMSP(Graph<L> g) {
@@ -53,19 +49,18 @@ public class KruskalMSP<L> {
         // controllo le condizioni sul grafo
         checkGraph(g);
         // creo l'insieme risultato
-        Set<GraphEdge<L>> risultato = new HashSet<GraphEdge<L>>();
+        Set<GraphEdge<L>> risultato = new HashSet<>();
         // creo gli insiemi disgiunti, uno per ogni nodo
         this.disjointSets.clear();
         for (GraphNode<L> n : g.getNodes()) {
-            HashSet<GraphNode<L>> s = new HashSet<GraphNode<L>>();
+            HashSet<GraphNode<L>> s = new HashSet<>();
             s.add(n);
             this.disjointSets.add(s);
         }
         // Ordino gli archi in senso crescente in una lista in modo da evitare
         // problemi con il comparator che non � compatibile con equals.
-        List<GraphEdge<L>> archi = new ArrayList<GraphEdge<L>>();
-        archi.addAll(g.getEdges());
-        Collections.sort(archi, this.edgesComparator);
+        List<GraphEdge<L>> archi = new ArrayList<>(g.getEdges());
+        archi.sort(this.edgesComparator);
         for (GraphEdge<L> e : archi) {
             int i = setOf(e.getNode1());
             int j = setOf(e.getNode2());
@@ -125,14 +120,7 @@ public class KruskalMSP<L> {
 
         @Override
         public int compare(GraphEdge<L> o1, GraphEdge<L> o2) {
-            if (o1.getWeight() < o2.getWeight())
-                return -1;
-            else if (o1.getWeight() > o2.getWeight())
-                return 1;
-            else // peso uguale
-                return 0;
+            return Double.compare(o1.getWeight(), o2.getWeight());
         }
-
     }
-
 }

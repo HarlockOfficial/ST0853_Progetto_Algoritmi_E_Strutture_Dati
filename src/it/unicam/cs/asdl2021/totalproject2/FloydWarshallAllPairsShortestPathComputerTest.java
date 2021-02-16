@@ -22,7 +22,7 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("b");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false));
+        tmp1.addEdge(new GraphEdge<>(h, g, true));
         assertThrows(NullPointerException.class, () -> new FloydWarshallAllPairsShortestPathComputer<String>(null));//eccezzione perch� � null
         assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp));//eccezzione perch� � orientato
         assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp1));//eccezzione per mancanza di peso
@@ -36,8 +36,8 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("b");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, -1));
-        tmp1.addEdge(new GraphEdge<>(g, h, false, -1));
+        tmp1.addEdge(new GraphEdge<>(h, g, true, -1));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, -1));
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         //noinspection Convert2MethodRef
         assertThrows(IllegalArgumentException.class, () -> app.computeShortestPaths());//eccezzione ciclo con peso negativo
@@ -52,7 +52,7 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("b");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 1));
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 1));
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         assertFalse(app.isComputed());
         app.computeShortestPaths();
@@ -66,7 +66,7 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("b");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 1));
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 1));
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         assertEquals(app.getGraph(), tmp1);
     }
@@ -75,20 +75,20 @@ class FloydWarshallAllPairsShortestPathComputerTest {
     final void testGetShortestPath() {
         Graph<String> tmp1 = new AdjacencyMatrixDirectedGraph<>();
         GraphNode<String> g = new GraphNode<>("1");
-        tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("2");
-        tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 2));
-        tmp1.addEdge(new GraphEdge<>(g, h, false, 3));
-        GraphNode<String> p = new GraphNode<>("4");
-        tmp1.addNode(p);
-        tmp1.addEdge(new GraphEdge<>(g, p, false, 5));
-        tmp1.addEdge(new GraphEdge<>(h, p, false, 4));
         GraphNode<String> d = new GraphNode<>("3");
+        GraphNode<String> p = new GraphNode<>("4");
+        tmp1.addNode(g);
+        tmp1.addNode(h);
         tmp1.addNode(d);
-        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, false, 2);
+        tmp1.addNode(p);
+        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, true, 2);
+        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, true, 1);
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 2));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, 3));
+        tmp1.addEdge(new GraphEdge<>(g, p, true, 5));
+        tmp1.addEdge(new GraphEdge<>(h, p, true, 4));
         tmp1.addEdge(appEdge1);
-        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, false, 1);
         tmp1.addEdge(appEdge2);
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         app.computeShortestPaths();
@@ -96,10 +96,8 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         getShortestPath.add(appEdge1);
         getShortestPath.add(appEdge2);
         assertEquals(app.getShortestPath(p, h), getShortestPath);
-        getShortestPath.add(new GraphEdge<>(d, h, false, 3));
+        getShortestPath.add(new GraphEdge<>(d, h, true, 3));
         assertNotEquals(app.getShortestPath(p, h), getShortestPath);
-
-
     }
 
     @Test
@@ -109,29 +107,48 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("2");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 2));
-        tmp1.addEdge(new GraphEdge<>(g, h, false, 3));
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 2));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, 3));
         GraphNode<String> p = new GraphNode<>("4");
         tmp1.addNode(p);
-        tmp1.addEdge(new GraphEdge<>(g, p, false, 5));
-        tmp1.addEdge(new GraphEdge<>(h, p, false, 4));
+        tmp1.addEdge(new GraphEdge<>(g, p, true, 5));
+        tmp1.addEdge(new GraphEdge<>(h, p, true, 4));
         GraphNode<String> d = new GraphNode<>("3");
         tmp1.addNode(d);
-        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, false, 2);
+        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, true, 2);
         tmp1.addEdge(appEdge1);
-        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, false, 1);
+        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, true, 1);
+        tmp1.addEdge(appEdge2);
+        FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
+        app.computeShortestPaths();
+        assertEquals(app.getShortestPathCost(p, h), 3);
+    }
+
+    @Test
+    final void testPrintPath() {
+        Graph<String> tmp1 = new AdjacencyMatrixDirectedGraph<>();
+        GraphNode<String> g = new GraphNode<>("1");
+        GraphNode<String> h = new GraphNode<>("2");
+        GraphNode<String> d = new GraphNode<>("3");
+        GraphNode<String> p = new GraphNode<>("4");
+        tmp1.addNode(g);
+        tmp1.addNode(h);
+        tmp1.addNode(d);
+        tmp1.addNode(p);
+        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, true, 2);
+        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, true, 1);
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 2));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, 3));
+        tmp1.addEdge(new GraphEdge<>(g, p, true, 5));
+        tmp1.addEdge(new GraphEdge<>(h, p, true, 4));
+        tmp1.addEdge(appEdge1);
         tmp1.addEdge(appEdge2);
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         app.computeShortestPaths();
         List<GraphEdge<String>> getShortestPath = new ArrayList<>();
         getShortestPath.add(appEdge1);
         getShortestPath.add(appEdge2);
-        assertEquals(app.getShortestPathCost(p, h), 3);
-    }
-
-    @Test
-    final void testPrintPath() {
-        fail("Not yet implemented"); // TODO
+        assertEquals(app.printPath(app.getShortestPath(p, h)), app.printPath(getShortestPath));
     }
 
     @Test
@@ -141,23 +158,20 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("2");
         tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 2));
-        tmp1.addEdge(new GraphEdge<>(g, h, false, 3));
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 2));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, 3));
         GraphNode<String> p = new GraphNode<>("4");
         tmp1.addNode(p);
-        tmp1.addEdge(new GraphEdge<>(g, p, false, 5));
-        tmp1.addEdge(new GraphEdge<>(h, p, false, 4));
+        tmp1.addEdge(new GraphEdge<>(g, p, true, 5));
+        tmp1.addEdge(new GraphEdge<>(h, p, true, 4));
         GraphNode<String> d = new GraphNode<>("3");
         tmp1.addNode(d);
-        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, false, 2);
+        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, true, 2);
         tmp1.addEdge(appEdge1);
-        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, false, 1);
+        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, true, 1);
         tmp1.addEdge(appEdge2);
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         app.computeShortestPaths();
-        List<GraphEdge<String>> getShortestPath = new ArrayList<>();
-        getShortestPath.add(appEdge1);
-        getShortestPath.add(appEdge2);
         assertEquals(app.getCostMatrix()[3][3], 0);
         assertEquals(app.getCostMatrix()[1][0], 2);
 
@@ -167,28 +181,24 @@ class FloydWarshallAllPairsShortestPathComputerTest {
     final void testGetPredecessorMatrix() {
         Graph<String> tmp1 = new AdjacencyMatrixDirectedGraph<>();
         GraphNode<String> g = new GraphNode<>("1");
-        tmp1.addNode(g);
         GraphNode<String> h = new GraphNode<>("2");
-        tmp1.addNode(h);
-        tmp1.addEdge(new GraphEdge<>(h, g, false, 2));
-        tmp1.addEdge(new GraphEdge<>(g, h, false, 3));
-        GraphNode<String> p = new GraphNode<>("4");
-        tmp1.addNode(p);
-        tmp1.addEdge(new GraphEdge<>(g, p, false, 5));
-        tmp1.addEdge(new GraphEdge<>(h, p, false, 4));
         GraphNode<String> d = new GraphNode<>("3");
+        GraphNode<String> p = new GraphNode<>("4");
+        tmp1.addNode(g);
+        tmp1.addNode(h);
         tmp1.addNode(d);
-        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, false, 2);
+        tmp1.addNode(p);
+        GraphEdge<String> appEdge1 = new GraphEdge<>(p, d, true, 2);
+        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, true, 1);
+        tmp1.addEdge(new GraphEdge<>(h, g, true, 2));
+        tmp1.addEdge(new GraphEdge<>(g, h, true, 3));
+        tmp1.addEdge(new GraphEdge<>(g, p, true, 5));
+        tmp1.addEdge(new GraphEdge<>(h, p, true, 4));
         tmp1.addEdge(appEdge1);
-        GraphEdge<String> appEdge2 = new GraphEdge<>(d, h, false, 1);
         tmp1.addEdge(appEdge2);
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         app.computeShortestPaths();
-        List<GraphEdge<String>> getShortestPath = new ArrayList<>();
-        getShortestPath.add(appEdge1);
-        getShortestPath.add(appEdge2);
         assertEquals(-1, app.getPredecessorMatrix()[0][2]);
-
     }
 
 }
