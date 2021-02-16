@@ -72,7 +72,7 @@ public class BinaryHeapMinPriorityQueue {
      */
     public PriorityQueueElement extractMinimum() {
         if (heap.isEmpty()) {
-            throw new NoSuchElementException("Heap is empty, cannot obrain first element");
+            throw new NoSuchElementException("Heap is empty, cannot obtain first element");
         }
         PriorityQueueElement out = heap.get(0);
         PriorityQueueElement last = heap.remove(heap.size() - 1);

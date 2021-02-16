@@ -1,16 +1,15 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class KruskalMSPTest {
 
@@ -53,7 +52,7 @@ class KruskalMSPTest {
         gr.addEdge(new GraphEdge<>(g, i, false, 6));
         gr.addEdge(new GraphEdge<>(g, h, false, 1));
         gr.addEdge(new GraphEdge<>(h, i, false, 7));
-        KruskalMSP<String> alg = new KruskalMSP<String>();
+        KruskalMSP<String> alg = new KruskalMSP<>();
         Set<GraphEdge<String>> result = new HashSet<>();
         result.add(new GraphEdge<>(a, b, false, 4));
         result.add(new GraphEdge<>(b, c, false, 8));
@@ -64,19 +63,19 @@ class KruskalMSPTest {
         result.add(new GraphEdge<>(f, g, false, 2));
         result.add(new GraphEdge<>(g, h, false, 1));
         assertEquals(result, alg.computeMSP(gr));
-        
-        
-        Graph<String> tmp = new AdjacencyMatrixDirectedGraph();
-        assertThrows(NullPointerException.class,()-> alg.computeMSP(null));//eccezzione null
-        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp));//eccezzione per il grafo orientato
-        GraphNode<String> n1=new GraphNode<String>("a");
-        GraphNode<String> n2=new GraphNode<String>("b");
-        GraphEdge<String> edge1 = new GraphEdge<String>(n1, n2, false);
+
+
+        Graph<String> tmp = new AdjacencyMatrixDirectedGraph<>();
+        assertThrows(NullPointerException.class, () -> alg.computeMSP(null));//eccezzione null
+        assertThrows(IllegalArgumentException.class, () -> alg.computeMSP(tmp));//eccezzione per il grafo orientato
+        GraphNode<String> n1 = new GraphNode<>("a");
+        GraphNode<String> n2 = new GraphNode<>("b");
+        GraphEdge<String> edge1 = new GraphEdge<>(n1, n2, true);
         edge1.setWeight(-1);
-        tmp.addNode(new GraphNode<String>("p"));
-        tmp.addNode(new GraphNode<String>("b"));
+        tmp.addNode(new GraphNode<>("p"));
+        tmp.addNode(new GraphNode<>("b"));
         tmp.addEdge(edge1);
-        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp)); //dovrebbe dare l'eccezzione per il peso negativo
+        assertThrows(IllegalArgumentException.class, () -> alg.computeMSP(tmp)); //dovrebbe dare l'eccezzione per il peso negativo
     }
 
 }

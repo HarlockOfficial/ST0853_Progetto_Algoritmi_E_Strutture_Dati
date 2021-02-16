@@ -1,15 +1,16 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class BinaryHeapMinPriorityQueueTest {
     @Test
@@ -23,9 +24,9 @@ class BinaryHeapMinPriorityQueueTest {
         BinaryHeapMinPriorityQueue heap = new BinaryHeapMinPriorityQueue();
         assertThrows(NullPointerException.class, () -> heap.insert(null));
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             heap.insert(new Element(-1, finalSize - i, i));
-            assertEquals(finalSize-i, heap.minimum().getPriority());
+            assertEquals(finalSize - i, heap.minimum().getPriority());
             assertEquals(new Element(-1, -1, i), heap.minimum());
         }
         heap.insert(new Element(-1, 0, -123));
@@ -40,9 +41,9 @@ class BinaryHeapMinPriorityQueueTest {
         assertThrows(NoSuchElementException.class, () -> heap.minimum());
         Random generator = new Random(123456);
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             heap.insert(new Element(-1, finalSize - i, generator.nextInt()));
-            assertEquals(finalSize-i, heap.minimum().getPriority());
+            assertEquals(finalSize - i, heap.minimum().getPriority());
         }
         heap.insert(new Element(-1, 0, -123));
         assertEquals(0, heap.minimum().getPriority());
@@ -57,13 +58,13 @@ class BinaryHeapMinPriorityQueueTest {
         Random generator = new Random(123456);
         ArrayList<PriorityQueueElement> values = new ArrayList<>();
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             PriorityQueueElement elem = new Element(-1, generator.nextDouble(), generator.nextInt());
             heap.insert(elem);
             values.add(elem);
         }
-        values.sort((o1, o2) -> (o1.getPriority()-o2.getPriority())>0?1:(o1.getPriority()-o2.getPriority())==0?0:-1);
-        for(PriorityQueueElement value: values){
+        values.sort((o1, o2) -> (o1.getPriority() - o2.getPriority()) > 0 ? 1 : (o1.getPriority() - o2.getPriority()) == 0 ? 0 : -1);
+        for (PriorityQueueElement value : values) {
             assertEquals(value, heap.extractMinimum());
         }
     }
@@ -78,15 +79,15 @@ class BinaryHeapMinPriorityQueueTest {
         Random generator = new Random(123456);
         ArrayList<PriorityQueueElement> values = new ArrayList<>();
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             PriorityQueueElement elem = new Element(-1, generator.nextDouble(), generator.nextInt());
             heap.insert(elem);
             values.add(elem);
         }
         assertThrows(NoSuchElementException.class, () -> heap.decreasePriority(new Element(-1, 12, 23), Double.NEGATIVE_INFINITY));
         assertThrows(NoSuchElementException.class, () -> heap.decreasePriority(new Element(values.size(), 12, 23), Double.NEGATIVE_INFINITY));
-        values.sort((o1, o2) -> (o1.getPriority()-o2.getPriority())>0?1:(o1.getPriority()-o2.getPriority())==0?0:-1);
-        for(int i = values.size()-1;i>0;--i){
+        values.sort((o1, o2) -> (o1.getPriority() - o2.getPriority()) > 0 ? 1 : (o1.getPriority() - o2.getPriority()) == 0 ? 0 : -1);
+        for (int i = values.size() - 1; i > 0; --i) {
             assertNotEquals(values.get(i), heap.minimum());
             int finalI = i;
             assertThrows(IllegalArgumentException.class, () -> heap.decreasePriority(values.get(finalI), Double.POSITIVE_INFINITY));
@@ -108,7 +109,7 @@ class BinaryHeapMinPriorityQueueTest {
         BinaryHeapMinPriorityQueue heap = new BinaryHeapMinPriorityQueue();
         Random generator = new Random(123456);
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             assertEquals(i, heap.size());
             heap.insert(new Element(-1, generator.nextDouble(), generator.nextInt()));
         }
@@ -120,7 +121,7 @@ class BinaryHeapMinPriorityQueueTest {
         BinaryHeapMinPriorityQueue heap = new BinaryHeapMinPriorityQueue();
         Random generator = new Random(123456);
         int finalSize = 4000;
-        for(int i=0;i<finalSize;++i){
+        for (int i = 0; i < finalSize; ++i) {
             heap.insert(new Element(-1, generator.nextDouble(), generator.nextInt()));
         }
         assertEquals(finalSize, heap.size());
@@ -128,14 +129,15 @@ class BinaryHeapMinPriorityQueueTest {
         assertEquals(0, heap.size());
     }
 
-    private static class Element implements PriorityQueueElement{
+    private static class Element implements PriorityQueueElement {
+        private final int value;
         private int handle;
         private double priority;
-        private final int value;
-        Element(int handle, double priority, int value){
-            this.handle=handle;
-            this.priority=priority;
-            this.value=value;
+
+        Element(int handle, double priority, int value) {
+            this.handle = handle;
+            this.priority = priority;
+            this.value = value;
         }
 
         @Override
@@ -145,7 +147,7 @@ class BinaryHeapMinPriorityQueueTest {
 
         @Override
         public void setPriority(double newPriority) {
-            priority=newPriority;
+            priority = newPriority;
         }
 
         @Override
@@ -155,7 +157,7 @@ class BinaryHeapMinPriorityQueueTest {
 
         @Override
         public void setHandle(int newHandle) {
-            handle=newHandle;
+            handle = newHandle;
         }
 
         @Override

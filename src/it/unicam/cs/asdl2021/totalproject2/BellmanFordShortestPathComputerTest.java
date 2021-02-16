@@ -1,17 +1,15 @@
 package it.unicam.cs.asdl2021.totalproject2;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class BellmanFordShortestPathComputerTest {
     @Test
@@ -96,10 +94,10 @@ class BellmanFordShortestPathComputerTest {
     final void testGetGraph() {
         Graph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             GraphNode<Integer> node1 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
             GraphNode<Integer> node2 = graph.getNodeAtIndex(generator.nextInt(graph.nodeCount()));
             graph.addEdge(new GraphEdge<>(node1, node2, true, generator.nextInt()));

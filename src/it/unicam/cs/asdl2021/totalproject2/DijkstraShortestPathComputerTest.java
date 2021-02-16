@@ -8,13 +8,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class DijkstraShortestPathComputerTest {
     @Test
-    final void testDijkstraShortestPathComputer(){
+    final void testDijkstraShortestPathComputer() {
         //null graph
         assertThrows(NullPointerException.class, () -> new DijkstraShortestPathComputer<>(null));
         Graph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
@@ -49,7 +47,7 @@ class DijkstraShortestPathComputerTest {
         assertThrows(IllegalStateException.class, () -> solver.getLastSource());
     }
 
-    private Graph<Integer> getValidGraph(){
+    private Graph<Integer> getValidGraph() {
         Graph<Integer> graph = new AdjacencyMatrixDirectedGraph<>();
         graph.addNode(new GraphNode<>(1));
         graph.addNode(new GraphNode<>(2));
@@ -61,7 +59,7 @@ class DijkstraShortestPathComputerTest {
     }
 
     @Test
-    final void testComputeShortestPathFrom(){
+    final void testComputeShortestPathFrom() {
         Graph<Integer> graph = getValidGraph();
         SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
         assertThrows(NullPointerException.class, () -> solver.computeShortestPathsFrom(null));
@@ -72,7 +70,7 @@ class DijkstraShortestPathComputerTest {
     }
 
     @Test
-    final void testIsComputed(){
+    final void testIsComputed() {
         Graph<Integer> graph = getValidGraph();
         SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
         assertFalse(solver.isComputed());
@@ -81,7 +79,7 @@ class DijkstraShortestPathComputerTest {
     }
 
     @Test
-    final void testGetLastSource(){
+    final void testGetLastSource() {
         Graph<Integer> graph = getValidGraph();
         SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
         assertThrows(IllegalStateException.class, () -> solver.getLastSource());
@@ -90,7 +88,7 @@ class DijkstraShortestPathComputerTest {
     }
 
     @Test
-    final void testGetGraph(){
+    final void testGetGraph() {
         Graph<Integer> graph = getValidGraph();
         SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
         //cannot test with different graph with same content, because equals is not implemented
@@ -99,7 +97,7 @@ class DijkstraShortestPathComputerTest {
     }
 
     @Test
-    final void testGetShortestPathToErrorsOnly(){
+    final void testGetShortestPathToErrorsOnly() {
         Graph<Integer> graph = getValidGraph();
         SingleSourceShortestPathComputer<Integer> solver = new DijkstraShortestPathComputer<>(graph);
         assertThrows(IllegalStateException.class, () -> solver.getShortestPathTo(new GraphNode<>(2)));

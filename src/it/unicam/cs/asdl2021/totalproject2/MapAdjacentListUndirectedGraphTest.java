@@ -9,19 +9,17 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 
  * @author Template: Luca Tesei
- *
  */
 class MapAdjacentListUndirectedGraphTest {
-    private Graph<Integer> getValidGraph(){
+    private Graph<Integer> getValidGraph() {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphNode<Integer>> nodes = graph.getNodes();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             boolean result;
             do {
                 //noinspection unchecked
@@ -29,7 +27,7 @@ class MapAdjacentListUndirectedGraphTest {
                 //noinspection unchecked
                 GraphNode<Integer> node2 = (GraphNode<Integer>) nodes.toArray()[generator.nextInt(nodes.size())];
                 result = graph.addEdge(new GraphEdge<>(node1, node2, false, generator.nextInt()));
-            }while (!result);
+            } while (!result);
         }
         return graph;
     }
@@ -38,7 +36,7 @@ class MapAdjacentListUndirectedGraphTest {
     final void testNodeCount() {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             assertEquals(i, graph.nodeCount());
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
@@ -49,11 +47,11 @@ class MapAdjacentListUndirectedGraphTest {
     final void testEdgeCount() {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphNode<Integer>> nodes = graph.getNodes();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             assertEquals(i, graph.edgeCount());
             boolean result;
             do {
@@ -62,7 +60,7 @@ class MapAdjacentListUndirectedGraphTest {
                 //noinspection unchecked
                 GraphNode<Integer> node2 = (GraphNode<Integer>) nodes.toArray()[generator.nextInt(nodes.size())];
                 result = graph.addEdge(new GraphEdge<>(node1, node2, false, generator.nextInt()));
-            }while (!result);
+            } while (!result);
         }
         assertEquals(4000, graph.edgeCount());
     }
@@ -70,8 +68,8 @@ class MapAdjacentListUndirectedGraphTest {
     @Test
     final void testClear() {
         Graph<Integer> graph = getValidGraph();
-        assertTrue(graph.nodeCount()>0);
-        assertTrue(graph.edgeCount()>0);
+        assertTrue(graph.nodeCount() > 0);
+        assertTrue(graph.edgeCount() > 0);
         graph.clear();
         assertEquals(0, graph.nodeCount());
         assertEquals(0, graph.edgeCount());
@@ -88,7 +86,7 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
         Set<GraphNode<Integer>> nodeList = new HashSet<>();
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             assertEquals(i, graph.getNodes().size());
             assertEquals(nodeList, graph.getNodes());
             GraphNode<Integer> node = new GraphNode<>(generator.nextInt());
@@ -110,14 +108,14 @@ class MapAdjacentListUndirectedGraphTest {
         Random generator = new Random(123456);
         Set<GraphNode<Integer>> nodeList = new HashSet<>();
         boolean trueTested = false, falseTested = false;
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             GraphNode<Integer> node = new GraphNode<>(generator.nextInt(50));
-            if(nodeList.add(node)){
+            if (nodeList.add(node)) {
                 assertTrue(graph.addNode(node));
-                trueTested=true;
-            }else{
+                trueTested = true;
+            } else {
                 assertFalse(graph.addNode(node));
-                falseTested=true;
+                falseTested = true;
             }
         }
         assertTrue(trueTested && falseTested);
@@ -128,7 +126,7 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = getValidGraph();
         assertThrows(NullPointerException.class, () -> graph.removeNode(null));
         Set<GraphNode<Integer>> nodes = new HashSet<>(graph.getNodes());
-        for(GraphNode<Integer> node: nodes){
+        for (GraphNode<Integer> node : nodes) {
             assertTrue(graph.removeNode(node));
             assertFalse(graph.removeNode(node));
         }
@@ -139,7 +137,7 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = getValidGraph();
         assertThrows(NullPointerException.class, () -> graph.containsNode(null));
         Set<GraphNode<Integer>> nodes = new HashSet<>(graph.getNodes());
-        for(GraphNode<Integer> node: nodes){
+        for (GraphNode<Integer> node : nodes) {
             assertTrue(graph.containsNode(node));
             graph.removeNode(node);
             assertFalse(graph.containsNode(node));
@@ -152,20 +150,20 @@ class MapAdjacentListUndirectedGraphTest {
         assertThrows(NullPointerException.class, () -> graph.getNodeOf(null));
         Random generator = new Random(123456);
         Set<GraphNode<Integer>> nodeList = new HashSet<>();
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             GraphNode<Integer> node = new GraphNode<>(generator.nextInt());
             graph.addNode(node);
             nodeList.add(node);
         }
-        for(GraphNode<Integer> node: nodeList){
+        for (GraphNode<Integer> node : nodeList) {
             assertEquals(node, graph.getNodeOf(node.getLabel()));
         }
         boolean falseTested = false;
-        for(int i=0;i<1000;++i){
+        for (int i = 0; i < 1000; ++i) {
             GraphNode<Integer> node = new GraphNode<>(generator.nextInt());
-            if(!nodeList.contains(node)){
+            if (!nodeList.contains(node)) {
                 assertNull(graph.getNodeOf(node.getLabel()));
-                falseTested=true;
+                falseTested = true;
             }
         }
         assertTrue(falseTested);
@@ -185,7 +183,7 @@ class MapAdjacentListUndirectedGraphTest {
     }
 
     @Test
-    final void testGetEdge(){
+    final void testGetEdge() {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
         assertThrows(NullPointerException.class, () ->
@@ -195,12 +193,12 @@ class MapAdjacentListUndirectedGraphTest {
                 graph.getEdge(new GraphNode<>(new Random().nextInt()), null)
         );
         assertThrows(NullPointerException.class, () -> graph.getEdge(null, null));
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         //noinspection unchecked
         assertThrows(IllegalArgumentException.class, () ->
-                graph.getEdge(new GraphNode<>(-1),(GraphNode<Integer>) graph.getNodes().toArray()[0])
+                graph.getEdge(new GraphNode<>(-1), (GraphNode<Integer>) graph.getNodes().toArray()[0])
         );
         //noinspection unchecked
         assertThrows(IllegalArgumentException.class, () ->
@@ -210,14 +208,14 @@ class MapAdjacentListUndirectedGraphTest {
                 graph.getEdge(new GraphNode<>(-1), new GraphNode<>(-2))
         );
         assertEquals(graph.edgeCount(), 0);
-        for(int i=0;i<graph.nodeCount();++i){
-            for(int j=0;j<graph.nodeCount(); ++j){
+        for (int i = 0; i < graph.nodeCount(); ++i) {
+            for (int j = 0; j < graph.nodeCount(); ++j) {
                 //noinspection unchecked
                 assertNull(graph.getEdge((GraphNode<Integer>) graph.getNodes().toArray()[i], (GraphNode<Integer>) graph.getNodes().toArray()[j]));
             }
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
             //noinspection unchecked
@@ -227,7 +225,7 @@ class MapAdjacentListUndirectedGraphTest {
             graph.addEdge(edge);
         }
         assertEquals(edgeList.size(), graph.edgeCount());
-        for(GraphEdge<Integer> edge: edgeList){
+        for (GraphEdge<Integer> edge : edgeList) {
             assertEquals(edge, graph.getEdge(edge.getNode1(), edge.getNode2()));
         }
     }
@@ -243,11 +241,11 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         assertThrows(NullPointerException.class, () -> graph.getAdjacentNodesOf(null));
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
             //noinspection unchecked
@@ -260,10 +258,10 @@ class MapAdjacentListUndirectedGraphTest {
         Set<GraphNode<Integer>> adjacents = new HashSet<>();
         //noinspection unchecked
         GraphNode<Integer> node = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
-        for(GraphEdge<Integer> edge: edgeList){
-            if(edge.getNode1().equals(node)){
+        for (GraphEdge<Integer> edge : edgeList) {
+            if (edge.getNode1().equals(node)) {
                 adjacents.add(edge.getNode2());
-            }else if(edge.getNode2().equals(node)){
+            } else if (edge.getNode2().equals(node)) {
                 adjacents.add(edge.getNode1());
             }
         }
@@ -281,11 +279,11 @@ class MapAdjacentListUndirectedGraphTest {
     final void testGetEdges() {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             assertEquals(graph.getEdges(), edgeList);
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
@@ -302,11 +300,11 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         assertThrows(NullPointerException.class, () -> graph.addEdge(null));
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphNode<Integer>> nodes = graph.getNodes();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             boolean result;
             do {
                 //noinspection unchecked
@@ -314,10 +312,10 @@ class MapAdjacentListUndirectedGraphTest {
                 //noinspection unchecked
                 GraphNode<Integer> node2 = (GraphNode<Integer>) nodes.toArray()[generator.nextInt(nodes.size())];
                 result = graph.addEdge(new GraphEdge<>(node1, node2, false, generator.nextInt()));
-                if(result){
+                if (result) {
                     assertFalse(graph.addEdge(new GraphEdge<>(node1, node2, false, generator.nextInt())));
                 }
-            }while(!result);
+            } while (!result);
         }
         //noinspection unchecked
         assertThrows(IllegalArgumentException.class, () -> graph.addEdge(
@@ -349,11 +347,11 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         assertThrows(NullPointerException.class, () -> graph.removeEdge(null));
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
             //noinspection unchecked
@@ -379,7 +377,7 @@ class MapAdjacentListUndirectedGraphTest {
                 new GraphNode<>(-2),
                 false,
                 generator.nextInt())));
-        for(GraphEdge<Integer> edge: edgeList){
+        for (GraphEdge<Integer> edge : edgeList) {
             assertTrue(graph.removeEdge(edge));
             assertFalse(graph.removeEdge(edge));
         }
@@ -390,12 +388,12 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         assertThrows(NullPointerException.class, () -> graph.containsEdge(null));
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             // assuming that addNode works
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
             //noinspection unchecked
@@ -422,7 +420,7 @@ class MapAdjacentListUndirectedGraphTest {
                 new GraphNode<>(-2),
                 false,
                 generator.nextInt())));
-        for(GraphEdge<Integer> edge: edgeList){
+        for (GraphEdge<Integer> edge : edgeList) {
             assertTrue(graph.containsEdge(edge));
             graph.removeEdge(edge);
             assertFalse(graph.containsEdge(edge));
@@ -434,11 +432,11 @@ class MapAdjacentListUndirectedGraphTest {
         Graph<Integer> graph = new MapAdjacentListUndirectedGraph<>();
         assertThrows(NullPointerException.class, () -> graph.getEdgesOf(null));
         Random generator = new Random(123456);
-        for(int i=0;i<100;++i){
+        for (int i = 0; i < 100; ++i) {
             graph.addNode(new GraphNode<>(generator.nextInt()));
         }
         Set<GraphEdge<Integer>> edgeList = new HashSet<>();
-        for(int i=0;i<4000;++i){
+        for (int i = 0; i < 4000; ++i) {
             //noinspection unchecked
             GraphNode<Integer> node1 = (GraphNode<Integer>) graph.getNodes().toArray()[generator.nextInt(graph.nodeCount())];
             //noinspection unchecked
@@ -451,10 +449,10 @@ class MapAdjacentListUndirectedGraphTest {
         //noinspection unchecked
         GraphNode<Integer> node = (GraphNode<Integer>) graph.getNodes().toArray()[0];
         Set<GraphEdge<Integer>> nodeEdges = new HashSet<>();
-        for(GraphEdge<Integer> edge: edgeList){
-            if(edge.getNode1().equals(node)){
+        for (GraphEdge<Integer> edge : edgeList) {
+            if (edge.getNode1().equals(node)) {
                 nodeEdges.add(edge);
-            }else if(edge.getNode2().equals(node)){
+            } else if (edge.getNode2().equals(node)) {
                 nodeEdges.add(edge);
             }
         }
