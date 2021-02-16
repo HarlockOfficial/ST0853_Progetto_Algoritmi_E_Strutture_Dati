@@ -71,7 +71,12 @@ class KruskalMSPTest {
         tmp.addEdge(edge1);
         assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp)); //dovrebbe dare l'eccezzione per il peso negativo
 
-        
+        Graph<String> tmp2 = new AdjacencyMatrixDirectedGraph();
+        GraphNode<String> n3=new GraphNode<String>("a");
+        GraphNode<String> n4=new GraphNode<String>("b");
+        GraphEdge<String> edge2 = new GraphEdge<String>(n1, n2, false);
+        tmp.addEdge(edge2);
+        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp2)); //eccezzioni per arco non pesato
     }
 
 }

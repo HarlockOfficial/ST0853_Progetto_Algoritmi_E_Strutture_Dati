@@ -170,5 +170,16 @@ class PrimMSPTest {
         assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr1,e));//eccezzione il grafo è orientato
         gr.addEdge(new GraphEdge<>(g, h, false, -1));
         assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr,g));//eccezzione un arco ha peso negativo
+        Graph<String> gr2 = new AdjacencyMatrixDirectedGraph<>();
+        GraphNode<String> e2 = new GraphNode<String>("a");
+        gr2.addNode(e2);
+        GraphNode<String> f2 = new GraphNode<String>("b");
+        gr2.addNode(f2);
+        GraphNode<String> g2 = new GraphNode<String>("2a");
+        gr2.addNode(g2);
+        GraphNode<String> h2 = new GraphNode<String>("b");
+        gr2.addNode(h2);
+        gr2.addEdge(new GraphEdge<String>(e, f, false));
+        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr2,g2));//eccezzione un arco senza peso
     }
 }
