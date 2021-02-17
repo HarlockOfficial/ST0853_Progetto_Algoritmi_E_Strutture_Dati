@@ -31,15 +31,15 @@ public class KruskalMSP<L> {
     /**
      * Utilizza l'algoritmo goloso di Kruskal per trovare un albero di copertura
      * minimo in un grafo non orientato e pesato, con pesi degli archi non
-     * negativi. L'albero restituito non � radicato, quindi � rappresentato
+     * negativi. L'albero restituito non è radicato, quindi è rappresentato
      * semplicemente con un sottoinsieme degli archi del grafo.
      * 
      * @param g
      *              un grafo non orientato, pesato, con pesi non negativi
      * @return l'insieme degli archi del grafo g che costituiscono l'albero di
      *         copertura minimo trovato
-     * @throws NullPointerException se il grafo g � null
-     * @throws IllegalArgumentException se il grafo g � orientato, non pesato o
+     * @throws NullPointerException se il grafo g è null
+     * @throws IllegalArgumentException se il grafo g è orientato, non pesato o
      *        con pesi negativi
      */
     public Set<GraphEdge<L>> computeMSP(Graph<L> g) {
@@ -93,7 +93,7 @@ public class KruskalMSP<L> {
     }
 
     /*
-     * Controlla le tre propriet� richieste al grafo e, se non soddisfatte,
+     * Controlla le tre proprietà richieste al grafo e, se non soddisfatte,
      * lancia le relative eccezioni
      */
     private void checkGraph(Graph<L> g) {

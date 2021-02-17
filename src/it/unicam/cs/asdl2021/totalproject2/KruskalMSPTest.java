@@ -60,8 +60,8 @@ class KruskalMSPTest {
         
         
         Graph<String> tmp = new AdjacencyMatrixDirectedGraph<>();
-        assertThrows(NullPointerException.class,()-> alg.computeMSP(null));//eccezzione perchè è null
-        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp));//eccezzione per il grafo orientato
+        assertThrows(NullPointerException.class,()-> alg.computeMSP(null));//eccezione perchè è null
+        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp));//eccezione per il grafo orientato
         GraphNode<String> n1= new GraphNode<>("a");
         GraphNode<String> n2= new GraphNode<>("b");
         GraphEdge<String> edge1 = new GraphEdge<>(n1, n2, true);
@@ -69,14 +69,16 @@ class KruskalMSPTest {
         tmp.addNode(n1);
         tmp.addNode(n2);
         tmp.addEdge(edge1);
-        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp)); //dovrebbe dare l'eccezzione per il peso negativo
+        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp)); //dovrebbe dare l'eccezione per il peso negativo
 
-        Graph<String> tmp2 = new AdjacencyMatrixDirectedGraph();
-        GraphNode<String> n3=new GraphNode<String>("a");
-        GraphNode<String> n4=new GraphNode<String>("b");
-        GraphEdge<String> edge2 = new GraphEdge<String>(n1, n2, false);
-        tmp.addEdge(edge2);
-        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp2)); //eccezzioni per arco non pesato
+        Graph<String> tmp2 = new AdjacencyMatrixDirectedGraph<>();
+        GraphNode<String> n3= new GraphNode<>("a");
+        GraphNode<String> n4= new GraphNode<>("b");
+        GraphEdge<String> edge2 = new GraphEdge<>(n3, n4, true);
+        tmp2.addNode(n3);
+        tmp2.addNode(n4);
+        tmp2.addEdge(edge2);
+        assertThrows(IllegalArgumentException.class,()->alg.computeMSP(tmp2)); //eccezioni per arco non pesato
     }
 
 }

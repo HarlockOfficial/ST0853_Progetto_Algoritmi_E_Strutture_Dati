@@ -11,9 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Template: Luca Tesei
  */
 class FloydWarshallAllPairsShortestPathComputerTest {
-
-    // TODO implementare tutti i test non ancora implementati
-
     @Test
     final void testFloydWarshallAllPairsShortestPathComputer() {
         Graph<String> tmp = new MapAdjacentListUndirectedGraph<>();
@@ -23,9 +20,9 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         GraphNode<String> h = new GraphNode<>("b");
         tmp1.addNode(h);
         tmp1.addEdge(new GraphEdge<>(h, g, true));
-        assertThrows(NullPointerException.class, () -> new FloydWarshallAllPairsShortestPathComputer<String>(null));//eccezzione perch� � null
-        assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp));//eccezzione perch� � orientato
-        assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp1));//eccezzione per mancanza di peso
+        assertThrows(NullPointerException.class, () -> new FloydWarshallAllPairsShortestPathComputer<String>(null));//eccezione perchè è null
+        assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp));//eccezione perchè è orientato
+        assertThrows(IllegalArgumentException.class, () -> new FloydWarshallAllPairsShortestPathComputer<>(tmp1));//eccezione per mancanza di peso
 
     }
 
@@ -40,7 +37,7 @@ class FloydWarshallAllPairsShortestPathComputerTest {
         tmp1.addEdge(new GraphEdge<>(g, h, true, -1));
         FloydWarshallAllPairsShortestPathComputer<String> app = new FloydWarshallAllPairsShortestPathComputer<>(tmp1);
         //noinspection Convert2MethodRef
-        assertThrows(IllegalArgumentException.class, () -> app.computeShortestPaths());//eccezzione ciclo con peso negativo
+        assertThrows(IllegalArgumentException.class, () -> app.computeShortestPaths());//eccezione ciclo con peso negativo
 
 
     }

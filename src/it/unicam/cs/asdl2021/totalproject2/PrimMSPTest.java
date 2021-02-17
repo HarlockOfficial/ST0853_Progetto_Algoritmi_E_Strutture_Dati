@@ -153,9 +153,9 @@ class PrimMSPTest {
         assertSame(b.getPrevious(), d);
         assertSame(c.getPrevious(), b);
         assertNull(d.getPrevious());
-        assertThrows(NullPointerException.class,()-> alg.computeMSP(null,null));//eccezzione perch� � null
-        assertThrows(NullPointerException.class,()-> alg.computeMSP(null,c ));//eccezzione perch� � null
-        assertThrows(NullPointerException.class,()-> alg.computeMSP(gr,null));//eccezzione perch� � null
+        assertThrows(NullPointerException.class,()-> alg.computeMSP(null,null));//eccezione perchè è null
+        assertThrows(NullPointerException.class,()-> alg.computeMSP(null,c ));//eccezione perchè è null
+        assertThrows(NullPointerException.class,()-> alg.computeMSP(gr,null));//eccezione perchè è null
         assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr, new GraphNode<>("pi")));//il nuovo nodo non esiste in gr
         Graph<String> gr1 = new AdjacencyMatrixDirectedGraph<>();
         GraphNode<String> e = new GraphNode<>("a");
@@ -167,19 +167,20 @@ class PrimMSPTest {
         GraphNode<String> h = new GraphNode<>("b");
         gr1.addNode(h);
         gr1.addEdge(new GraphEdge<>(e, f, true, 1));
-        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr1,e));//eccezzione il grafo è orientato
+        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr1,e));//eccezione il grafo è orientato
         gr.addEdge(new GraphEdge<>(g, h, false, -1));
-        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr,g));//eccezzione un arco ha peso negativo
+        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr,g));//eccezione un arco ha peso negativo
+
         Graph<String> gr2 = new AdjacencyMatrixDirectedGraph<>();
-        GraphNode<String> e2 = new GraphNode<String>("a");
+        GraphNode<String> e2 = new GraphNode<>("a");
         gr2.addNode(e2);
-        GraphNode<String> f2 = new GraphNode<String>("b");
+        GraphNode<String> f2 = new GraphNode<>("b");
         gr2.addNode(f2);
-        GraphNode<String> g2 = new GraphNode<String>("2a");
+        GraphNode<String> g2 = new GraphNode<>("2a");
         gr2.addNode(g2);
-        GraphNode<String> h2 = new GraphNode<String>("b");
+        GraphNode<String> h2 = new GraphNode<>("b");
         gr2.addNode(h2);
-        gr2.addEdge(new GraphEdge<String>(e, f, false));
-        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr2,g2));//eccezzione un arco senza peso
+        gr2.addEdge(new GraphEdge<>(e, f, true));
+        assertThrows(IllegalArgumentException.class,()-> alg.computeMSP(gr2,g2));//eccezione un arco senza peso
     }
 }
