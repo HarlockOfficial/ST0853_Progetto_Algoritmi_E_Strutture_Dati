@@ -58,7 +58,7 @@ public class KruskalMSP<L> {
             this.disjointSets.add(s);
         }
         // Ordino gli archi in senso crescente in una lista in modo da evitare
-        // problemi con il comparator che non � compatibile con equals.
+        // problemi con il comparator che non è compatibile con equals.
         List<GraphEdge<L>> archi = new ArrayList<>(g.getEdges());
         archi.sort(this.edgesComparator);
         for (GraphEdge<L> e : archi) {
